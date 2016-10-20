@@ -20,6 +20,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var ConfigFile string
+
 // startCmd represents the start command
 var startCmd = &cobra.Command{
 	Use:   "start",
@@ -32,7 +34,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
-		fmt.Println("start called")
+		fmt.Println("start called", ConfigFile, args)
 	},
 }
 
@@ -48,5 +50,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	startCmd.Flags().StringVarP(&ConfigFile, "config", "c", "", "Location of project.conf.json configuration file")
 
 }
