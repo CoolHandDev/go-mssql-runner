@@ -28,10 +28,9 @@ var startCmd = &cobra.Command{
 	Short: "Start running scripts",
 	Long: `
 
-The start command kicks off the execution of the scripts
-listed in the configuration json file specified in the
---config flag. The proper connection information must be
-passed in.
+The start command kicks off the execution of the scripts listed in 
+the configuration json file specified in the --config flag. The 
+proper connection information to MS SQL Server must be passed in.
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -53,6 +52,6 @@ func init() {
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	startCmd.Flags().StringVarP(&ConfigFile, "config", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&ConfigFile, "conf", "c", "", "Location of project.conf.json configuration file")
 
 }
