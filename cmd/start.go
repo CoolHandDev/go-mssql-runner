@@ -21,8 +21,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//configFile stores the location of the configuraiton file
 var configFile string
+var userName string
+var password string
+var server string
+var database string
+var port int
+var cnTimeout int
+var encrypt bool
+var appName string
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -56,5 +63,13 @@ func init() {
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name")
+	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password")
+	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host")
+	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on")
+	startCmd.Flags().IntVarP(&port, "port", "", 1433, "Host port number")
+	startCmd.Flags().IntVarP(&cnTimeout, "timeout", "t", 14400, "Connection timeout in seconds")
+	startCmd.Flags().BoolVarP(&encrypt, "encrypt", "e", false, "Encrypt the connection true/false (default false)")
+	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 
 }
