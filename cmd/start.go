@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//ConfigFile stores the location of the configuraiton file
 var ConfigFile string
 
 // startCmd represents the start command
