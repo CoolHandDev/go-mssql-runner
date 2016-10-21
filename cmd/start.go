@@ -17,11 +17,12 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/coolhanddev/go-mssql-runner/pkg/config"
 	"github.com/spf13/cobra"
 )
 
-//ConfigFile stores the location of the configuraiton file
-var ConfigFile string
+//configFile stores the location of the configuraiton file
+var configFile string
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -36,7 +37,8 @@ proper connection information to MS SQL Server must be passed in.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
-		fmt.Println("start called", ConfigFile, args)
+		fmt.Println("start called", configFile, args)
+		fmt.Println(config.GetCnString("sa", "dev", "localhost", "adventureworks2012"))
 	},
 }
 
@@ -53,6 +55,6 @@ func init() {
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	startCmd.Flags().StringVarP(&ConfigFile, "conf", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "Location of project.conf.json configuration file")
 
 }
