@@ -48,9 +48,6 @@ server and database.
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		fmt.Println("start called", configFile, args)
-
 		//Do not continue if required connection parameters are not met
 		if userName == "" || password == "" || server == "" || database == "" {
 			fmt.Println("Please pass in the required connection values. ")
@@ -64,7 +61,7 @@ server and database.
 		cn.Port = port
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
-		fmt.Println(config.GetCnString(cn))
+		//fmt.Println(config.GetCnString(cn))
 		mssql.OpenCn(config.GetCnString(cn))
 	},
 }

@@ -1,0 +1,16 @@
+{
+    "name": "example project",
+    "description": "description for project",
+    "type": "data analysis",
+    "version": "1.0.0",
+    "scripts": {
+        "schema": [
+            "schema1.sql",
+            "schema2.sql"
+        ],
+        "process": [
+            "process1.sql",
+            "process2.sql"
+        ]
+    }
+}
