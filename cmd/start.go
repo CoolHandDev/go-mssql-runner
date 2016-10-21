@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//TODO:  Allow checking of environment variables for required connection values
 package cmd
 
 import (
@@ -19,6 +20,7 @@ import (
 	"os"
 
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
+	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +31,6 @@ var server string
 var database string
 var port string
 var cnTimeout string
-var encrypt string
 var appName string
 var cn config.MssqlCn
 
@@ -61,10 +62,10 @@ server and database.
 		cn.Server = server
 		cn.Database = database
 		cn.Port = port
-		cn.Encrypt = encrypt
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
 		fmt.Println(config.GetCnString(cn))
+		mssql.OpenCn(config.GetCnString(cn))
 	},
 }
 
@@ -88,7 +89,6 @@ func init() {
 	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on. *Required")
 	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
 	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
-	startCmd.Flags().StringVarP(&encrypt, "encrypt", "e", "false", "Encrypt the connection true/false (default false)")
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 
 }

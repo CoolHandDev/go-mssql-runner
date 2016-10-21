@@ -1,6 +1,6 @@
 package config
 
-//TODO: Create a connection struct
+//MssqlCn represents the connection string
 type MssqlCn struct {
 	UserName  string
 	Password  string
@@ -8,7 +8,6 @@ type MssqlCn struct {
 	Database  string
 	Port      string
 	CnTimeout string
-	Encrypt   string
 	AppName   string
 }
 
@@ -20,7 +19,6 @@ func GetCnString(c MssqlCn) string {
 		";database=" + c.Database +
 		";port=" + c.Port +
 		";connection timeout=" + c.CnTimeout +
-		";encrypt=" + c.Encrypt +
 		";app name=" + c.AppName
 
 }
