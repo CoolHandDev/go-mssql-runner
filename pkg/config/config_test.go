@@ -9,8 +9,7 @@ func TestGetCnString(t *testing.T) {
 	expected := "user id=testuser;password=testpassword;server=testhost;database=testdatabase"
 
 	if result != expected {
-		t.Log("test failed", "got", result, "expected", expected)
-		t.Fail()
+		t.Errorf("Expected %s but got %s", expected, result)
 	}
 
 }
