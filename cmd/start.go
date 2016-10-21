@@ -20,18 +20,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//ConfigFile stores the location of the configuraiton file
 var ConfigFile string
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Start running scripts",
+	Long: `
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The start command kicks off the execution of the scripts listed in 
+the configuration json file specified in the --config flag. The 
+proper connection information to MS SQL Server must be passed in.
+
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
 		fmt.Println("start called", ConfigFile, args)
@@ -51,6 +53,6 @@ func init() {
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	startCmd.Flags().StringVarP(&ConfigFile, "config", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&ConfigFile, "conf", "c", "", "Location of project.conf.json configuration file")
 
 }

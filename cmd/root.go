@@ -27,16 +27,47 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "go-mssql-runner",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A script runner for MS SQL Server",
+	Long: `This utility runs a series of SQL scripts against MS SQL Server.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-// Uncomment the following line if your bare application
-// has an action associated with it:
-//	Run: func(cmd *cobra.Command, args []string) { },
+The utility relies on a JSON configuration file, named mssqlrun.conf.json,
+to find out which scripts to run.  The configuration file should be in
+the format specified below:
+
+{
+    "name": "A SQL Project",
+    "description": "This project runs a series of scripts to manipulate data",
+    "type": "Report",
+    "version": "1.0.0",
+    "scripts": {
+        "schema": [
+            "schema_script1.sql",
+            "schema_script2.sql"
+        ],
+        "process": [
+            "process_script1.sql",
+            "process_script2.sql"
+        ]
+    }
+}
+
+"schema" scripts contain DDL statements such as create table or create stored
+procedure statements. "process" statements contain DML that run business logic.
+All scripts are run in the order they appear in their respective arrays. For 
+example, in the "schema" array, schema_script1.sql will be run before the 
+schema_script2.sql file.
+
+
+In addition to specifiying a configuration, the proper connection information
+must be passed in via the command flags. For example:
+
+go-mssql-runner start -c /PathToConfig/ -u sqlUserName -p sqlPassword -s SQLServerHostName -d DatabaseName
+
+
+`,
+	// Uncomment the following line if your bare application
+	// has an action associated with it:
+	//	Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -55,7 +86,7 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go-mssql-runner.yaml)")
+	//RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go-mssql-runner.yaml)")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -68,8 +99,8 @@ func initConfig() {
 	}
 
 	viper.SetConfigName(".go-mssql-runner") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")  // adding home directory as first search path
-	viper.AutomaticEnv()          // read in environment variables that match
+	viper.AddConfigPath("$HOME")            // adding home directory as first search path
+	viper.AutomaticEnv()                    // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
