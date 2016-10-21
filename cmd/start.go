@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
 	"github.com/spf13/cobra"
@@ -26,10 +27,11 @@ var userName string
 var password string
 var server string
 var database string
-var port int
-var cnTimeout int
-var encrypt bool
+var port string
+var cnTimeout string
+var encrypt string
 var appName string
+var cn config.MssqlCn
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -40,12 +42,29 @@ var startCmd = &cobra.Command{
 The start command kicks off the execution of the scripts listed in 
 the configuration json file specified in the --config flag. The 
 proper connection information to MS SQL Server must be passed in.
+The minimum required connection information are: username, password,
+server and database.
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
+
 		fmt.Println("start called", configFile, args)
-		fmt.Println(config.GetCnString("sa", "dev", "localhost", "adventureworks2012"))
+
+		//Do not continue if required connection parameters are not met
+		if userName == "" || password == "" || server == "" || database == "" {
+			fmt.Println("Please pass in the required connection values. ")
+			fmt.Println("go-mssql-runner start -h for more information.")
+			os.Exit(-1)
+		}
+		cn.UserName = userName
+		cn.Password = password
+		cn.Server = server
+		cn.Database = database
+		cn.Port = port
+		cn.Encrypt = encrypt
+		cn.AppName = appName
+		cn.CnTimeout = cnTimeout
+		fmt.Println(config.GetCnString(cn))
 	},
 }
 
@@ -63,13 +82,13 @@ func init() {
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "Location of project.conf.json configuration file")
-	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name")
-	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password")
-	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host")
-	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on")
-	startCmd.Flags().IntVarP(&port, "port", "", 1433, "Host port number")
-	startCmd.Flags().IntVarP(&cnTimeout, "timeout", "t", 14400, "Connection timeout in seconds")
-	startCmd.Flags().BoolVarP(&encrypt, "encrypt", "e", false, "Encrypt the connection true/false (default false)")
+	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
+	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
+	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host. *Required")
+	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on. *Required")
+	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
+	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
+	startCmd.Flags().StringVarP(&encrypt, "encrypt", "e", "false", "Encrypt the connection true/false (default false)")
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 
 }
