@@ -12,16 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//TODO:  Allow checking of environment variables for required connection values
 package cmd
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/coolhanddev/go-mssql-runner/pkg/config"
+	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
 	"github.com/spf13/cobra"
 )
 
-//ConfigFile stores the location of the configuraiton file
-var ConfigFile string
+var configFile string
+var userName string
+var password string
+var server string
+var database string
+var port string
+var cnTimeout string
+var appName string
+var cn config.MssqlCn
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -32,11 +43,29 @@ var startCmd = &cobra.Command{
 The start command kicks off the execution of the scripts listed in 
 the configuration json file specified in the --config flag. The 
 proper connection information to MS SQL Server must be passed in.
+The minimum required connection information are: username, password,
+server and database.
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("start called", ConfigFile, args)
+
+		fmt.Println("start called", configFile, args)
+
+		//Do not continue if required connection parameters are not met
+		if userName == "" || password == "" || server == "" || database == "" {
+			fmt.Println("Please pass in the required connection values. ")
+			fmt.Println("go-mssql-runner start -h for more information.")
+			os.Exit(-1)
+		}
+		cn.UserName = userName
+		cn.Password = password
+		cn.Server = server
+		cn.Database = database
+		cn.Port = port
+		cn.AppName = appName
+		cn.CnTimeout = cnTimeout
+		fmt.Println(config.GetCnString(cn))
+		mssql.OpenCn(config.GetCnString(cn))
 	},
 }
 
@@ -53,6 +82,13 @@ func init() {
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	startCmd.Flags().StringVarP(&ConfigFile, "conf", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
+	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
+	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host. *Required")
+	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on. *Required")
+	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
+	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
+	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 
 }
