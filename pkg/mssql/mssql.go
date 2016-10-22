@@ -3,6 +3,7 @@ package mssql
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
@@ -32,6 +33,7 @@ func CreateSchema(s []string) {
 	if len(s) > 0 {
 		for _, schema := range s {
 			fmt.Println(schema)
+			fmt.Println(ReadScript(schema))
 		}
 	} else {
 		fmt.Println("No schema files processed.")
@@ -40,4 +42,13 @@ func CreateSchema(s []string) {
 
 func ExecScripts(s []string) {
 
+}
+
+func ReadScript(s string) string {
+	qry, err := ioutil.ReadFile(s)
+	if err != nil {
+		fmt.Println("Could not read file", s)
+		os.Exit(-1)
+	}
+	return string(qry)
 }
