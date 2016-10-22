@@ -1,6 +1,9 @@
 package config
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"reflect"
 	"testing"
 )
 
@@ -22,7 +25,6 @@ func TestGetCnString(t *testing.T) {
 		";port=1433" +
 		";connection timeout=600" +
 		";app name=test-app-name"
-
 	if result != expected {
 		t.Errorf("Expected %s but got %s", expected, result)
 	}
@@ -31,5 +33,21 @@ func TestGetCnString(t *testing.T) {
 
 //TestReadConfig tests if the config file is being read and unmarshalled
 func TestReadConfig(t *testing.T) {
+	var result PrjConfig
+	var expected PrjConfig
 
+	expected.Name = "example project"
+	expected.Description = "description for project"
+	expected.Type = "data analysis"
+	expected.Version = "1.0.0"
+	expected.Scripts.Schema = []string{"schema1.sql", "schema2.sql"}
+	expected.Scripts.Process = []string{"process1.sql", "process2.sql"}
+	configInMem, err := ioutil.ReadFile("../../mssqlrun.conf.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(configInMem, &result)
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("expected %s but got %s", expected, result)
+	}
 }

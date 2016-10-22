@@ -22,7 +22,7 @@ type MssqlCn struct {
 type PrjConfig struct {
 	Name        string
 	Description string
-	PrjType     string
+	Type        string
 	Version     string
 	Scripts     CfgScripts
 }
@@ -54,16 +54,13 @@ func ReadConfig(f string) {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
 		fmt.Println("error reading configuration")
 	}
-
 	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(wrkConfig)
-
 }
