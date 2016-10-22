@@ -63,7 +63,7 @@ server and database.
 		cn.CnTimeout = cnTimeout
 		//fmt.Println(config.GetCnString(cn))
 		mssql.OpenCn(config.GetCnString(cn))
-		config.ReadConfig("./test/mssqlrun.conf.json")
+		config.ReadConfig(configFile)
 	},
 }
 

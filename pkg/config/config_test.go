@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+//TestGetCnString tests if connection string if being constructed
 func TestGetCnString(t *testing.T) {
 	cn := new(MssqlCn)
 	cn.UserName = "testuser"
@@ -25,5 +26,10 @@ func TestGetCnString(t *testing.T) {
 	if result != expected {
 		t.Errorf("Expected %s but got %s", expected, result)
 	}
+
+}
+
+//TestReadConfig tests if the config file is being read and unmarshalled
+func TestReadConfig(t *testing.T) {
 
 }
