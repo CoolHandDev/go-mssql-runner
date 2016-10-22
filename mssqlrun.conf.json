@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "scripts": {
         "schema": [
-            "schema1.sql",
-            "schema2.sql"
+            "./schema/schema1.sql",
+            "./schema/schema2.sql"
         ],
         "process": [
             "process1.sql",
