@@ -63,6 +63,7 @@ server and database.
 		cn.CnTimeout = cnTimeout
 		//fmt.Println(config.GetCnString(cn))
 		mssql.OpenCn(config.GetCnString(cn))
+		config.ReadConfig(configFile)
 	},
 }
 
@@ -79,7 +80,7 @@ func init() {
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "Location of project.conf.json configuration file")
+	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "The configuration file")
 	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
 	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
 	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host. *Required")
