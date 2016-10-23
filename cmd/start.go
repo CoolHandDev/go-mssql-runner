@@ -64,7 +64,7 @@ server and database.
 		//fmt.Println(config.GetCnString(cn))
 		mssql.OpenCn(config.GetCnString(cn))
 		config.ReadConfig(configFile)
-		mssql.CreateSchema(config.GetSchemaScripts())
+		mssql.RunSchema(config.GetSchemaScripts())
 
 	},
 }

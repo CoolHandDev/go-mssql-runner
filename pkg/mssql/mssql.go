@@ -24,7 +24,8 @@ func OpenCn(cn string) {
 	}
 }
 
-func CreateSchema(s []string) {
+//RunSchema
+func RunSchema(s []string) {
 	err := db.Ping()
 	if err != nil {
 		fmt.Println("No database connection. Cannnot run schema scripts")
