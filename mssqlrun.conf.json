@@ -9,8 +9,8 @@
             "./schema/schema2.sql"
         ],
         "process": [
-            "process1.sql",
-            "process2.sql"
+            "./process/process1.sql",
+            "./process/process2.sql"
         ]
     }
 }

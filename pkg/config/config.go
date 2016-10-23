@@ -47,7 +47,8 @@ func GetCnString(c MssqlCn) string {
 
 var wrkConfig PrjConfig
 
-//ReadConfig reads the config file based on location passed in
+//ReadConfig reads the config file based on location passed interface{}
+//TODO: store path passed in.  It will be needed to resolve the scripts
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
@@ -68,6 +69,14 @@ func ReadConfig(f string) {
 func GetSchemaScripts() []string {
 	if len(wrkConfig.Scripts.Schema) > 0 {
 		return wrkConfig.Scripts.Schema
+	}
+	return []string{}
+}
+
+//GetProcessScripts returns the list of process scripts from the config
+func GetProcessScripts() []string {
+	if len(wrkConfig.Scripts.Process) > 0 {
+		return wrkConfig.Scripts.Process
 	}
 	return []string{}
 }

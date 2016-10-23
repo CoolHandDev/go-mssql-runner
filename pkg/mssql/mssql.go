@@ -24,22 +24,23 @@ func OpenCn(cn string) {
 	}
 }
 
-//RunSchema
-func RunSchema(s []string) {
+//RunScripts executes the schema scripts
+func RunScripts(s []string) {
 	err := db.Ping()
 	if err != nil {
 		fmt.Println("No database connection. Cannnot run schema scripts")
 		os.Exit(-1)
 	}
 	if len(s) > 0 {
-		for _, schema := range s {
-			ExecScript(ReadScript(schema))
+		for _, script := range s {
+			ExecScript(ReadScript(script))
 		}
 	} else {
 		fmt.Println("No schema files processed.")
 	}
 }
 
+//ExecScript executes a script
 func ExecScript(s string) {
 	r, err := db.Exec(s)
 	if err != nil {
