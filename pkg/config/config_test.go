@@ -51,3 +51,8 @@ func TestReadConfig(t *testing.T) {
 		t.Errorf("expected %s but got %s", expected, result)
 	}
 }
+
+//TestGetSchemaScripts tests if list of scrips is returned
+func TestGetSchemaScripts(t *testing.T) {
+
+}

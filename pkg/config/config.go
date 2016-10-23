@@ -62,5 +62,12 @@ func ReadConfig(f string) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(wrkConfig)
+}
+
+//GetSchemaScripts returns the list of schema scripts from the config
+func GetSchemaScripts() []string {
+	if len(wrkConfig.Scripts.Schema) > 0 {
+		return wrkConfig.Scripts.Schema
+	}
+	return []string{}
 }

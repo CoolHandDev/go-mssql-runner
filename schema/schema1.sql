@@ -1,0 +1,1 @@
+select 'schema 1'
