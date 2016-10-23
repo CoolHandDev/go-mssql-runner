@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 )
 
 //MssqlCn represents the connection string
@@ -46,15 +47,17 @@ func GetCnString(c MssqlCn) string {
 }
 
 var wrkConfig PrjConfig
+var WrkPath string
 
 //ReadConfig reads the config file based on location passed interface{}
-//TODO: store path passed in.  It will be needed to resolve the scripts
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
+	WrkPath = path.Dir(f)
+	fmt.Println(WrkPath)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
 		fmt.Println("error reading configuration")
@@ -67,16 +70,28 @@ func ReadConfig(f string) {
 
 //GetSchemaScripts returns the list of schema scripts from the config
 func GetSchemaScripts() []string {
+	var scripts []string
 	if len(wrkConfig.Scripts.Schema) > 0 {
-		return wrkConfig.Scripts.Schema
+		for i := range wrkConfig.Scripts.Schema {
+			scripts = append(scripts, ResolvePath(wrkConfig.Scripts.Schema[i]))
+		}
+		return scripts
 	}
 	return []string{}
 }
 
 //GetProcessScripts returns the list of process scripts from the config
 func GetProcessScripts() []string {
+	var scripts []string
 	if len(wrkConfig.Scripts.Process) > 0 {
-		return wrkConfig.Scripts.Process
+		for i := range wrkConfig.Scripts.Process {
+			scripts = append(scripts, ResolvePath(wrkConfig.Scripts.Process[i]))
+		}
+		return scripts
 	}
 	return []string{}
+}
+
+func ResolvePath(p string) string {
+	return WrkPath + p
 }
