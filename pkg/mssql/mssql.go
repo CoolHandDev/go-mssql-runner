@@ -32,16 +32,26 @@ func CreateSchema(s []string) {
 	}
 	if len(s) > 0 {
 		for _, schema := range s {
-			fmt.Println(schema)
-			fmt.Println(ReadScript(schema))
+			ExecScript(ReadScript(schema))
 		}
 	} else {
 		fmt.Println("No schema files processed.")
 	}
 }
 
-func ExecScripts(s []string) {
-
+func ExecScript(s string) {
+	r, err := db.Exec(s)
+	if err != nil {
+		panic(err)
+	}
+	id, err := r.LastInsertId()
+	if err != nil {
+	}
+	af, err := r.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Last inserted id:", id, "Rows affected:", af)
 }
 
 func ReadScript(s string) string {
