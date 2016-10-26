@@ -1,3 +1,4 @@
 *.exe
 *.sh
 go-mssql-runner
+.vscode
