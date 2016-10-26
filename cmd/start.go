@@ -41,7 +41,7 @@ var startCmd = &cobra.Command{
 	Long: `
 
 The start command kicks off the execution of the scripts listed in 
-the configuration json file specified in the --config flag. The 
+the configuration json file specified in the --conf flag. The 
 proper connection information to MS SQL Server must be passed in.
 The minimum required connection information are: username, password,
 server and database.
