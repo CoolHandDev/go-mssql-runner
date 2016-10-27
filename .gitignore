@@ -2,3 +2,4 @@
 *.sh
 go-mssql-runner
 .vscode
+debug
