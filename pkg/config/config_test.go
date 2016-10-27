@@ -40,8 +40,8 @@ func TestReadConfig(t *testing.T) {
 	expected.Description = "description for project"
 	expected.Type = "data analysis"
 	expected.Version = "1.0.0"
-	expected.Scripts.Schema = []string{"schema1.sql", "schema2.sql"}
-	expected.Scripts.Process = []string{"process1.sql", "process2.sql"}
+	expected.Scripts.Schema = []string{"/schema/schema1.sql", "/schema/schema2.sql"}
+	expected.Scripts.Process = []string{"/process/process1.sql", "/process/process2.sql"}
 	configInMem, err := ioutil.ReadFile("../../mssqlrun.conf.json")
 	if err != nil {
 		panic(err)
