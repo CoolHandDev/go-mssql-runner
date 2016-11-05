@@ -47,7 +47,9 @@ func GetCnString(c MssqlCn) string {
 }
 
 var wrkConfig PrjConfig
-var WrkPath string
+
+//wrkPath represents the working path
+var wrkPath string
 
 //ReadConfig reads the config file based on location passed interface{}
 func ReadConfig(f string) {
@@ -56,8 +58,8 @@ func ReadConfig(f string) {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-	WrkPath = path.Dir(f)
-	fmt.Println(WrkPath)
+	wrkPath = path.Dir(f)
+	fmt.Println(wrkPath)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
 		fmt.Println("error reading configuration")
@@ -92,6 +94,7 @@ func GetProcessScripts() []string {
 	return []string{}
 }
 
+//ResolvePath returns the fully qualified path of the name of the file passed in
 func ResolvePath(p string) string {
-	return WrkPath + p
+	return wrkPath + p
 }
