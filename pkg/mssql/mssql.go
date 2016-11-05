@@ -17,7 +17,7 @@ func OpenCn(cn string) {
 	var err error
 	db, err = sql.Open("mssql", cn)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	err = db.Ping()
 	if err != nil {
