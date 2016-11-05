@@ -25,6 +25,9 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 			b) default -- only filename and run duration included
 		3) add "env" flag to start command to use environment variables for connection information
 */
+//Version
+var Version = "undefined"
+
 func main() {
 	cmd.Execute()
 }
