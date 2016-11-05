@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/coolhanddev/go-mssql-runner/pkg/message/progress"
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
 )
 
@@ -34,6 +35,7 @@ func RunScripts(s []string) {
 	}
 	if len(s) > 0 {
 		for _, script := range s {
+			fmt.Println(progress.Prefix("Executing", script))
 			ExecScript(ReadScript(script))
 		}
 	} else {
@@ -43,18 +45,20 @@ func RunScripts(s []string) {
 
 //ExecScript executes a script
 func ExecScript(s string) {
-	r, err := db.Exec(s)
+	//r, err := db.Exec(s)
+	_, err := db.Exec(s)
 	if err != nil {
 		log.Fatal(err)
 	}
-	id, err := r.LastInsertId()
+	//id, err := r.LastInsertId()
 	if err != nil {
 	}
-	af, err := r.RowsAffected()
+	//af, err := r.RowsAffected()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Last inserted id:", id, "Rows affected:", af)
+	//fmt.Println(progress.Prefix("Inserted id (" + strconv.FormatInt(id, 10) + ")" + " Rows affected (" + strconv.FormatInt(af, 10) + ")"))
+
 }
 
 //ReadScript loads script file
