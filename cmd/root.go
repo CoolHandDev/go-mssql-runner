@@ -28,11 +28,10 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "go-mssql-runner",
 	Short: "A script runner for MS SQL Server",
-	Long: `This utility runs a series of SQL scripts against MS SQL Server.
+	Long: `Runs a series of file-based SQL scripts on MS SQL Server.
 
-The utility relies on a JSON configuration file, named mssqlrun.conf.json,
-to find out which scripts to run.  The configuration file should be in
-the format specified below:
+A JSON configuration file is required. The configuration file should be 
+in the format:
 
 {
     "name": "A SQL Project",
@@ -41,27 +40,41 @@ the format specified below:
     "version": "1.0.0",
     "scripts": {
         "schema": [
-            "schema_script1.sql",
-            "schema_script2.sql"
+            "/schema/schema_script1.sql",
+            "/schema/schema_script2.sql"
         ],
         "process": [
-            "process_script1.sql",
-            "process_script2.sql"
+            "/process/process_script1.sql",
+            "/process/process_script2.sql"
         ]
     }
 }
 
 "schema" scripts contain DDL statements such as create table or create stored
-procedure statements. "process" statements contain DML that run business logic.
+procedure statements. Files should reside under a /schema folder relative to 
+the JSON configuration file.
+
+"process" statements contain DML that run business logic. Files should reside
+under a /process folder relative to the configuration file.
+
+A "project" structure should look like:
+
+	/project-folder
+		mssqlrun.conf.json
+			/schema
+				schema_script1.sql
+				schema_script2.sql
+			/process
+				process_script1.sql
+				process_script2.sql
+
 All scripts are run in the order they appear in their respective arrays. For 
 example, in the "schema" array, schema_script1.sql will be run before the 
 schema_script2.sql file.
 
+Connection information must be passed in via the command flags. For example:
 
-In addition to specifiying a configuration, the proper connection information
-must be passed in via the command flags. For example:
-
-go-mssql-runner start -c /PathToConfig/ -u sqlUserName -p sqlPassword -s SQLServerHostName -d DatabaseName
+go-mssql-runner start -c /path/configFile.json -u sqlUserName -p sqlPassword -s SQLServerHostName -d DatabaseName
 
 
 `,
