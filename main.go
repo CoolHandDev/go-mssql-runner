@@ -29,5 +29,6 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 var Version = "undefined"
 
 func main() {
+	cmd.AppVersion = Version
 	cmd.Execute()
 }
