@@ -25,7 +25,13 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 			b) default -- only filename and run duration included
 		3) add "env" flag to start command to use environment variables for connection information
 */
-//Version
+
+//Version stores the app version from the git tag. Make sure to use the build command below
+//
+//go build -i -v -ldflags="-X main.Version=$(git describe --tags)"
+//
+//Note:  go install ignores passing of the git tag.  Run the regular build and manually cp the binary
+//to the GOBIN path
 var Version = "undefined"
 
 func main() {

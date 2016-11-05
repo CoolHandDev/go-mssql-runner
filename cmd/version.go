@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//AppVersion stores version information from main
 var AppVersion string
 
 // versionCmd represents the version command
