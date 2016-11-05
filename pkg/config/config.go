@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 )
@@ -55,8 +56,7 @@ var wrkPath string
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
-		fmt.Println(err)
-		os.Exit(-1)
+		log.Fatal(err)
 	}
 	wrkPath = path.Dir(f)
 	fmt.Println(wrkPath)
@@ -66,7 +66,7 @@ func ReadConfig(f string) {
 	}
 	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
@@ -20,7 +21,7 @@ func OpenCn(cn string) {
 	}
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -44,23 +45,23 @@ func RunScripts(s []string) {
 func ExecScript(s string) {
 	r, err := db.Exec(s)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	id, err := r.LastInsertId()
 	if err != nil {
 	}
 	af, err := r.RowsAffected()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	fmt.Println("Last inserted id:", id, "Rows affected:", af)
 }
 
+//ReadScript loads script file
 func ReadScript(s string) string {
 	qry, err := ioutil.ReadFile(s)
 	if err != nil {
-		fmt.Println("Could not read file", s)
-		os.Exit(-1)
+		log.Fatal(err, s)
 	}
 	return string(qry)
 }
