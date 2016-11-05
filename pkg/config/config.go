@@ -59,7 +59,6 @@ func ReadConfig(f string) {
 		log.Fatal(err)
 	}
 	wrkPath = path.Dir(f)
-	fmt.Println(wrkPath)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
 		fmt.Println("error reading configuration")

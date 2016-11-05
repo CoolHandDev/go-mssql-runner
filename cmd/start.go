@@ -18,8 +18,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
+	"github.com/coolhanddev/go-mssql-runner/pkg/message/progress"
 	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
 	"github.com/spf13/cobra"
 )
@@ -62,11 +64,17 @@ server and database.
 		cn.Port = port
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
-		//fmt.Println(config.GetCnString(cn))
+		startTime := time.Now()
+		fmt.Println(progress.Prefix("Opening database"))
 		mssql.OpenCn(config.GetCnString(cn))
+		fmt.Println(progress.Prefix("Reading scripts from configuration"))
 		config.ReadConfig(configFile)
+		fmt.Println(progress.Prefix("Executing schema scripts"))
 		mssql.RunScripts(config.GetSchemaScripts())
+		fmt.Println(progress.Prefix("Executing process scripts"))
 		mssql.RunScripts(config.GetProcessScripts())
+		elapsed := time.Since(startTime)
+		fmt.Println("Total time elapsed: ", elapsed)
 
 	},
 }
@@ -83,7 +91,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "The configuration file")
 	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
 	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
@@ -92,5 +99,4 @@ func init() {
 	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
 	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
-
 }
