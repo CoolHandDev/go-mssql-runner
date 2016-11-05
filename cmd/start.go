@@ -73,7 +73,6 @@ server and database.
 		mssql.RunScripts(config.GetSchemaScripts())
 		fmt.Println(progress.Prefix("Executing process scripts"))
 		mssql.RunScripts(config.GetProcessScripts())
-		time.Sleep(1 * time.Minute)
 		elapsed := time.Since(startTime)
 		fmt.Println("Total time elapsed: ", elapsed)
 
