@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 //MssqlCn represents the connection string
@@ -58,7 +58,7 @@ func ReadConfig(f string) {
 	if os.IsNotExist(err) {
 		log.Fatal(err)
 	}
-	wrkPath = path.Dir(f)
+	wrkPath = filepath.Dir(f)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
 		fmt.Println("error reading configuration")
