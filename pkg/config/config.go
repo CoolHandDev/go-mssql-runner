@@ -44,7 +44,6 @@ func GetCnString(c MssqlCn) string {
 		";port=" + c.Port +
 		";connection timeout=" + c.CnTimeout +
 		";app name=" + c.AppName
-
 }
 
 var wrkConfig PrjConfig
