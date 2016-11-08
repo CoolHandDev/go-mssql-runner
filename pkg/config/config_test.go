@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -85,6 +86,27 @@ func TestLoadConfiguration(t *testing.T) {
 					So(processList, ShouldNotBeEmpty)
 				})
 			})
+
+			Convey("The list of scripts should be able to resolve to files", func() {
+				Convey("A schema script file should be able to be accessed", func() {
+					schemaList := GetSchemaScripts()
+					So(schemaList[0], shouldFileExist)
+				})
+				Convey("A process script file should be able to be accessed", func() {
+					processList := GetProcessScripts()
+					So(processList[0], shouldFileExist)
+				})
+			})
+
 		})
 	})
+}
+
+//Custom assertion to check existence of file
+func shouldFileExist(actual interface{}, expected ...interface{}) string {
+	_, err := os.Stat(actual.(string))
+	if os.IsNotExist(err) {
+		return "Expected file to exist, but it did not"
+	}
+	return ""
 }
