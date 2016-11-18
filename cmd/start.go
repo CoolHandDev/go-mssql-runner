@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//TODO:  Allow checking of environment variables for required connection values
 package cmd
 
 import (
@@ -42,20 +41,55 @@ var startCmd = &cobra.Command{
 	Short: "Start running scripts",
 	Long: `
 
-The start command kicks off the execution of the scripts listed in 
-the configuration json file specified in the --conf flag. Connection
+The start command kicks off the execution of the scripts listed in the 
+configuration json file specified in the --conf flag. Connection
 information to MS SQL Server must be passed in.
 
-The minimum required connection information are: username, password,
-server and database.
+The minimum required database connection information are: username,
+password, server and database.
+
+The minimum required values to run the command can be set in environment
+variables.
+
+GOSQLR_CONFIGFILE
+GOSQLR_USERNAME
+GOSQLR_PASSWORD
+GOSQLR_SERVER
+GOSQLR_DATABASE
+
+Specifying parameter values will override the environment settings. 
+
+Examples:
+Passing parameters
+> go-mssql-runner -u dbuser -p secretpass -s 172.0.0.1 -d mydatabasename -c x:\workspace\mssqlrun.conf.json
+
+Environment variables are preset 
+> go-mssql-runner 
+
+Google how to set environment variables for your OS if you are not familiar
+with the concept.
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		//Do not continue if required connection parameters are not met
-		if userName == "" || password == "" || server == "" || database == "" {
-			fmt.Println("Please pass in the required connection values. ")
-			fmt.Println("go-mssql-runner start -h for more information.")
-			os.Exit(-1)
+		//check if required parameters are passed
+		if userName == "" || password == "" || server == "" || database == "" || configFile == "" {
+			//if required parameters are not met, check environment variables
+			if os.Getenv("GOSQLR_CONFIGFILE") == "" || os.Getenv("GOSQLR_USERNAME") == "" ||
+				os.Getenv("GOSQLR_PASSWORD") == "" || os.Getenv("GOSQLR_SERVER") == "" ||
+				os.Getenv("GOSQLR_DATABASE") == "" {
+
+				fmt.Println("Please pass in the required values. ")
+				fmt.Println("go-mssql-runner start -h for more information.")
+				os.Exit(-1)
+			} else if os.Getenv("GOSQLR_CONFIGFILE") != "" && os.Getenv("GOSQLR_USERNAME") != "" &&
+				os.Getenv("GOSQLR_PASSWORD") != "" && os.Getenv("GOSQLR_SERVER") != "" &&
+				os.Getenv("GOSQLR_DATABASE") != "" {
+				configFile = os.Getenv("GOSQLR_CONFIGFILE")
+				userName = os.Getenv("GOSQLR_USERNAME")
+				password = os.Getenv("GOSQLR_PASSWORD")
+				server = os.Getenv("GOSQLR_SERVER")
+				database = os.Getenv("GOSQLR_DATABASE")
+			}
 		}
 		cn.UserName = userName
 		cn.Password = password

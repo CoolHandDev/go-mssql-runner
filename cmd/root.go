@@ -72,6 +72,8 @@ All scripts are run in the order they appear in their respective arrays. For
 example, in the "schema" array, schema_script1.sql will be run before the 
 schema_script2.sql file.
 
+WARNING: Do not place GO statements in the script files.
+
 Connection information must be passed in via the command flags. For example:
 
 go-mssql-runner start -c /path/configFile.json -u sqlUserName -p sqlPassword -s SQLServerHostName -d DatabaseName
