@@ -1,5 +1,5 @@
 *.exe
 *.sh
-go-mssql-runner
+go-mssql-runner*
 .vscode
 debug
