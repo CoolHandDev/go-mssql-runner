@@ -28,7 +28,7 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 
 //Version stores the app version from the git tag. Make sure to use the build command below
 //
-//go build -i -v -ldflags="-X main.Version=$(git describe --tags)-build$(git describe --always)"
+//go build -i -v -ldflags="-X main.Version=$(git describe --tags)"
 //
 //Note:  go install ignores passing of the git tag.  Run the regular build and manually cp the binary
 //to the GOBIN path
