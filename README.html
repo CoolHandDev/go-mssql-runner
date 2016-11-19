@@ -1,0 +1,139 @@
+<h1 id="go-mssql-runner-a-handy-cli-utility-for-running-a-sequence-of-sql-script-files-against-sql-server">Go MSSQL Runner: a handy cli utility for running a sequence of sql script files against SQL Server</h1>
+<h1 id="overview">Overview</h1>
+<p>Using information from a JSON configuration file, this command line utility enables execution of one or a set of SQL script files.</p>
+<h1 id="platform-support">Platform support</h1>
+<p>Linux, OSX, Windows</p>
+<h1 id="quick-start">Quick Start</h1>
+<p>Navigate to the folder that has the executable. Execute the program by issuing the start command and passing in the necessary parameters for the database connection and the pointer to the configuration file.</p>
+<pre><code>$ go-mssql-runner start --username dbusername --password secret --server 172.0.0.1 --database yourdbname --conf /path/to/config/mssqlrun.conf.json</code></pre>
+<h1 id="installation">Installation</h1>
+<p>The executables may already be in the folder where this documentation is deployed. If not and only the source is available, then build the excutable for the desired platform.</p>
+<p>Simply copy the appropriate executable to the destination of choice and execute. The executables are native to the supported platforms. There is no need to install a runtime or a framework. There are three executables available:</p>
+<ol style="list-style-type: decimal">
+<li>go-mssql-runner -- executable for Linux.<br />
+</li>
+<li>go-mssql-runner.exe -- executable for Windows 64 bit.</li>
+<li>go-mssql-runner_osx_amd64 -- executable for OSX</li>
+</ol>
+<p>For the best experience, add the location of the executable to the system path so that it can be run from any path.</p>
+<h1 id="creating-a-project">Creating a project</h1>
+<p>A project refers to the mssqlrun.conf.json file and the accompanying script files (.sql) needed to satisfy a use case. Each project should be contained in its own folder with the following structure:</p>
+<pre><code>project-root
+│   mssqlrun.conf.json      
+│
+└───schema
+│   │   schema_script1.sql
+│   │   schema_script2.sql
+│   
+└───process
+    │   process_script1.sql
+    │   process_script1.sql</code></pre>
+<p>So, creating a project involves:</p>
+<ol style="list-style-type: decimal">
+<li>creating a project folder</li>
+<li>creating the mssqlrun.conf.json in that folder</li>
+<li>creating the schema and process subfolders</li>
+<li>creating or adding the scripts to those two subfolders</li>
+</ol>
+<h2 id="the-configuration-json-file">The Configuration JSON file</h2>
+<p>The configuration file, mssqlrun.conf.json, controls which scripts run and the order they are run. It also contains metadata about the project.</p>
+<p>To create a stub, copy the contents below and save into a file named mssqlrun.conf.json.</p>
+<pre><code>{
+    &quot;name&quot;: &quot;Project X&quot;,
+    &quot;description&quot;: &quot;Aggregate and cleanse data&quot;,
+    &quot;type&quot;: &quot;Report&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;scripts&quot;: {
+        &quot;schema&quot;: [
+            &quot;/schema/schema_script1.sql&quot;,
+            &quot;/schema/schema_script2.sql&quot;
+        ],
+        &quot;process&quot;: [
+            &quot;/process/process_script1.sql&quot;,
+            &quot;/process/process_script2.sql&quot;
+        ]
+    }
+}</code></pre>
+<p>The &quot;scripts&quot; field contains two sets of information:</p>
+<h3 id="schema">schema</h3>
+<p>This contains the list of script files that contain DDL such as create table or create stored procedure statements. The files should reside under a /schema folder relative to the configuration file.</p>
+<h3 id="process">process</h3>
+<p>This contains the list of script files that contain DML for the business logic. The files should reside under a /process folder relative to the configuration file.</p>
+<p><strong>Warning</strong>: Do not place the GO tsql keyword in the script files. If there is a need for transaction isolation, then place the relevant logic in their own .sql file(s).</p>
+<h4 id="order-of-execution">Order of execution</h4>
+<p>Schema scripts are run first and the scripts are run in the order they appear in the list. After the schema scripts, the process scripts are run; they are also run in the order they appear in the list. So, in the example schema above, all the scripts are executed in the following sequence:</p>
+<ol style="list-style-type: decimal">
+<li>schema_script1.sql</li>
+<li>schema_script2.sql</li>
+<li>process_script1.sql</li>
+<li>process_script2.sql</li>
+</ol>
+<h1 id="command-line">Command line</h1>
+<p>For help on which options are available, use go-mssql-runner -h or go-mssql-runner (command) -h</p>
+<h2 id="start-command">Start Command</h2>
+<p>The &quot;start&quot; command initiates the execution. Flags are used to specify connection and configuration needed for the program to run the scripts against a SQL Server instance.</p>
+<pre><code>    go-mssql-runner start [flags]
+
+    -a, --appname string    App name to show in db calls. Useful for SQL Profiler (default &quot;go-mssql-runner&quot;)
+    -c, --conf string       The configuration file
+    -d, --database string   Database to work on. *Required
+    -p, --password string   SQL Server user password. *Required
+        --port string       Host port number (default &quot;1433&quot;)
+    -s, --server string     SQL Server host. *Required
+    -t, --timeout string    Connection timeout in seconds (default &quot;14400&quot;)
+    -u, --username string   SQL Server user name. *Required</code></pre>
+<h3 id="minimum-information-for-execution">Minimum information for execution</h3>
+<ol style="list-style-type: decimal">
+<li>username</li>
+<li>password</li>
+<li>server</li>
+<li>database</li>
+<li>complete path and filename of the configuration file. ex. /workfolder/projectx/mssqlrun.conf.json</li>
+</ol>
+<h2 id="environment-variables">Environment Variables</h2>
+<p>The following environment variables can be set to store the minimum information. If no flags are set on the command, then the program will look at these for values. Flags override environment values.</p>
+<p><strong>GOSQLR_CONFIGFILE</strong></p>
+<p><strong>GOSQLR_USERNAME</strong></p>
+<p><strong>GOSQLR_PASSWORD</strong></p>
+<p><strong>GOSQLR_SERVER</strong></p>
+<p><strong>GOSQLR_DATABASE</strong></p>
+<h1 id="example-usage">Example usage</h1>
+<p>Below is an example for Windows, executing and passing command line options. The executable either exists in the folder or it is globally made available via the PATH environment variable.</p>
+<pre><code>c:\MyDBProject&gt;go-mssql-runner -u sa -p secret -s localhost -d adventureworks2012 -c ./mssqlrun.conf.json </code></pre>
+<p>Setting the environment variables first in the shell and then executing the utility</p>
+<pre><code>c:\MyDBProject&gt;set GOSQLR_CONFIGFILE=./mssqlrun.conf.json
+c:\MyDBProject&gt;set GOSQLR_USERNAME=sa
+c:\MyDBProject&gt;set GOSQLR_PASSWORD=secret
+c:\MyDBProject&gt;set GOSQLR_SERVER=localhost
+c:\MyDBProject&gt;set GOSQLR_DATABASE=adventureworks2012
+c:\MyDBProject&gt;go-mssql-runner start</code></pre>
+<p>Alternatively, the variables can be set in System Properties. So during command line execution, the program can be run by invoking start as showen above. One or more of the values can be overriden as shown in the example below where the config location is overriden by the value passed in the -c flag:</p>
+<pre><code>c:\MyDBProject&gt;go-mssql-runner start -c /SomeOtherProjectFolder/mssqlrun.conf.json</code></pre>
+<p>Linux and OSX usage is similar. Assuming the executable is made globally available by adding its location to the PATH via an init script</p>
+<pre><code>$ go-mssql-runner -u sa -p secret -s localhost -d adventureworks2012 -c ~/MyDBProject/mssqlrun.conf.json</code></pre>
+<p>Setting the environment variables to last only the lifetime of the terminal session.</p>
+<pre><code>$ export GOSQLR_CONFIGFILE=~/MyDBProject/mssqlrun.conf.json
+$ export GOSQLR_USERNAME=sa
+$ export GOSQLR_PASSWORD=secret
+$ export GOSQLR_SERVER=localhost
+$ export GOSQLR_DATABASE=adventureworks2012
+$ go-mssql-runner start</code></pre>
+<p>They can also be set permanently through /etc/environment or .profile. Of course, they can be overriden</p>
+<pre><code>$ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json</code></pre>
+<h1 id="tips-and-tricks">Tips and Tricks</h1>
+<p>*TBD</p>
+<h1 id="roadmap">Roadmap</h1>
+<ul>
+<li>&quot;init&quot; command to create a project</li>
+<li>--log flag to &quot;start&quot; command and allow different levels of logging output verbosity:
+<ul>
+<li>default: display filename and overall execution duration</li>
+<li>medium: display filename, overall execution duration, and query output if applicable</li>
+<li>verbose: all of #2 plus display the sql that was executed</li>
+</ul></li>
+<li>support for encrypting and decrypting schema and process script files<br />
+</li>
+<li>support for connection encryption to allow use of cloud servers. Azure and AWS require encryption.</li>
+<li>Dockerfile</li>
+<li>Build a version for the Raspberry PI!</li>
+</ul>

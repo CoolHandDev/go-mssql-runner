@@ -23,7 +23,6 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 			a) verbose -- filename, duration, query result information and query text included
 			b) medium -- filename, duration and query result information included
 			b) default -- only filename and run duration included
-		3) add "env" flag to start command to use environment variables for connection information
 */
 
 //Version stores the app version from the git tag. Make sure to use the build command below
