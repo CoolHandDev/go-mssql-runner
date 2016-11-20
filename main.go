@@ -29,6 +29,18 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 //
 //go build -i -v -ldflags="-X main.Version=$(git describe --tags)"
 //
+//To build for ALPINE Linux
+//CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -i -v -o go-mssql-runner -ldflags="-X main.Version=$(git describe --tags)"
+//
+//To build for Windows
+//GOOS=windows GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner.exe -ldflags="-X main.Version=$(git describe --tags)"
+//
+//To build for Linux (Debian/Ubuntu)
+//GOOS=linux GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner -ldflags="-X main.Version=$(git describe --tags)"
+//
+//To build for OSX
+//GOOS=darwin GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner -ldflags="-X main.Version=$(git describe --tags)"
+//
 //Note:  go install ignores passing of the git tag.  Run the regular build and manually cp the binary
 //to the GOBIN path
 var Version = "undefined"
