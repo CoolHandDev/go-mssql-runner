@@ -3,3 +3,4 @@
 go-mssql-runner*
 .vscode
 debug
+.idea
