@@ -99,16 +99,16 @@ with the concept.
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
 		startTime := time.Now()
-		fmt.Println(progress.Prefix("Opening database"))
+		fmt.Println(progress.Prefix("Opening database"), "=", cn.Server, "/", cn.Database)
 		mssql.OpenCn(config.GetCnString(cn))
-		fmt.Println(progress.Prefix("Reading scripts from configuration"))
+		fmt.Println(progress.Prefix("Loading configuration"), "=", configFile)
 		config.ReadConfig(configFile)
 		fmt.Println(progress.Prefix("Executing schema scripts"))
 		mssql.RunScripts(config.GetSchemaScripts())
 		fmt.Println(progress.Prefix("Executing process scripts"))
 		mssql.RunScripts(config.GetProcessScripts())
 		elapsed := time.Since(startTime)
-		fmt.Println("Total time elapsed: ", elapsed)
+		fmt.Println(progress.Prefix("Total time elapsed"), "=", elapsed)
 
 	},
 }

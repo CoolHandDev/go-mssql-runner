@@ -35,7 +35,7 @@ func RunScripts(s []string) {
 	}
 	if len(s) > 0 {
 		for _, script := range s {
-			fmt.Println(progress.Prefix("Executing script file", script))
+			fmt.Println(progress.Prefix("Executing script file", "=", script))
 			ExecScript(ReadScript(script))
 		}
 	} else {
