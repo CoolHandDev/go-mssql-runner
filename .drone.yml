@@ -3,7 +3,7 @@ pipeline:
     image: golang
     commands:
       - go env
-      - mkdir $GOPATH/bin
+      - export GOBIN=$GOPATH/bin
       - go get
       - go build
       - go test ./... 
