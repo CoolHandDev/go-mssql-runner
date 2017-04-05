@@ -18,9 +18,6 @@ $ go-mssql-runner start --username dbusername --password secret --server 172.0.0
 
 # Installation
 
-The executables may already be in the folder where this documentation is deployed.  If not and only the source is available, then build the excutable for the
-desired platform.
-
 Simply copy the appropriate executable to the destination of choice and execute.  The executables are native to the supported platforms.  There is no need
 to install a runtime or a framework. There are three executables available:
 
@@ -28,7 +25,7 @@ to install a runtime or a framework. There are three executables available:
 2. go-mssql-runner.exe -- executable for Windows 64 bit.
 3. go-mssql-runner_osx_amd64 -- executable for OSX
 
-For the best experience, add the location of the executable to the system path so that it can be run from any path.
+Add executable to PATH environment variable to make it available globally.
 
 # Creating a project
 
@@ -131,6 +128,9 @@ to run the scripts against a SQL Server instance.
 5. complete path and filename of the configuration file.  ex. /workfolder/projectx/mssqlrun.conf.json
 
 ## Environment Variables
+
+First things first, storing credentials in environment variables is not secure.  Use this only for short lived terminal sessions.
+
 The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program
 will look at these for values.  Flags override environment values.
 
@@ -160,9 +160,8 @@ c:\MyDBProject>set GOSQLR_SERVER=localhost
 c:\MyDBProject>set GOSQLR_DATABASE=adventureworks2012
 c:\MyDBProject>go-mssql-runner start
 ```
-Alternatively, the variables can be set in System Properties.  So during command line execution, the program can be run by invoking start as
-showen above.  One or more of the values can be overriden as shown in the example below where the config location is overriden by the value
-passed in the -c flag:
+During command line execution, the program can be run by invoking start as shown above.  One or more of the values can be overriden as shown in 
+the example below where the config location is overriden by the value passed in the -c flag:
 
 ```
 c:\MyDBProject>go-mssql-runner start -c /SomeOtherProjectFolder/mssqlrun.conf.json
@@ -181,7 +180,7 @@ $ export GOSQLR_SERVER=localhost
 $ export GOSQLR_DATABASE=adventureworks2012
 $ go-mssql-runner start
 ```
-They can also be set permanently through /etc/environment or .profile.  Of course, they can be overriden
+
 ```
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
@@ -196,5 +195,4 @@ $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
     * verbose: all of #2 plus display the sql that was executed
 * support for encrypting and decrypting schema and process script files    
 * support for connection encryption to allow use of cloud servers. Azure and AWS require encryption.
-* Dockerfile
-* Build a version for the Raspberry PI!
+* update to support Context
