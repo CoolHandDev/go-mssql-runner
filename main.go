@@ -32,8 +32,14 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 //To build for ALPINE Linux
 //CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -i -v -o go-mssql-runner -ldflags="-X main.Version=$(git describe --tags)"
 //
-//To build for Windows
-//GOOS=windows GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner.exe -ldflags="-X main.Version=$(git describe --tags)"
+//To build for Windows.
+//	In Bash:
+//	GOOS=windows GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner.exe -ldflags="-X main.Version=$(git describe --tags)"
+//
+//	In Powershell perform these in sequence:
+//	set GOOS=windows
+//	set GOARCH=amd64
+//	go build -a -installsuffix -i -v -o go-mssql-runner.exe -ldflags="-X main.Version=$(git describe --tags)
 //
 //To build for Linux (Debian/Ubuntu)
 //GOOS=linux GOARCH=amd64 go build -a -installsuffix -i -v -o go-mssql-runner -ldflags="-X main.Version=$(git describe --tags)"
