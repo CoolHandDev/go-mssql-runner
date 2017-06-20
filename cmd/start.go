@@ -16,11 +16,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
-	"github.com/coolhanddev/go-mssql-runner/pkg/message/progress"
 	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
 	"github.com/spf13/cobra"
 )
@@ -99,16 +99,16 @@ with the concept.
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
 		startTime := time.Now()
-		fmt.Println(progress.Prefix("Opening database"), "=", cn.Server, "/", cn.Database)
+		log.Println("Opening database", "=", cn.Server, "/", cn.Database)
 		mssql.OpenCn(config.GetCnString(cn))
-		fmt.Println(progress.Prefix("Loading configuration"), "=", configFile)
+		log.Println("Loading configuration", "=", configFile)
 		config.ReadConfig(configFile)
-		fmt.Println(progress.Prefix("Executing schema scripts"))
+		log.Println("Executing schema scripts")
 		mssql.RunScripts(config.GetSchemaScripts())
-		fmt.Println(progress.Prefix("Executing process scripts"))
+		log.Println("Executing process scripts")
 		mssql.RunScripts(config.GetProcessScripts())
 		elapsed := time.Since(startTime)
-		fmt.Println(progress.Prefix("Total time elapsed"), "=", elapsed)
+		log.Println("Total time elapsed", "=", elapsed)
 
 	},
 }
