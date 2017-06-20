@@ -42,7 +42,7 @@ project-root
 │   
 └───process
     │   process_script1.sql
-    │   process_script1.sql
+    │   process_script2.sql
 ```
 So, creating a project involves:
 
