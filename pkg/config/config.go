@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -60,7 +59,7 @@ func ReadConfig(f string) {
 	wrkPath = filepath.Dir(f)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
-		fmt.Println("error reading configuration")
+		log.Println("error reading configuration")
 	}
 	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
 	if err != nil {

@@ -2,12 +2,10 @@ package mssql
 
 import (
 	"database/sql"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 
-	"github.com/coolhanddev/go-mssql-runner/pkg/message/progress"
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
 )
 
@@ -30,16 +28,16 @@ func OpenCn(cn string) {
 func RunScripts(s []string) {
 	err := db.Ping()
 	if err != nil {
-		fmt.Println("No database connection. Cannnot run schema scripts")
+		log.Println("No database connection. Cannnot run schema scripts")
 		os.Exit(-1)
 	}
 	if len(s) > 0 {
 		for _, script := range s {
-			fmt.Println(progress.Prefix("Executing script file", "=", script))
+			log.Println("Executing script file", "=", script)
 			ExecScript(ReadScript(script))
 		}
 	} else {
-		fmt.Println("No schema files processed.")
+		log.Println("No schema files processed.")
 	}
 }
 
