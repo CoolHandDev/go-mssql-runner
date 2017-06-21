@@ -119,6 +119,7 @@ to run the scripts against a SQL Server instance.
     -t, --timeout string    Connection timeout in seconds (default "14400")
     -u, --username string   SQL Server user name. *Required
     -l, --loglevel string   Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
+        --logfile string    File to write log to
 ```
 
 ### Minimum information for execution
@@ -185,9 +186,9 @@ $ go-mssql-runner start
 ```
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
-# Tips and Tricks
-* To save output to a log file, simply redirect/pipe the stout of the command to a file. 
-* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command 
+# Tips and Tricks 
+* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command
+* Save the screen output to a text file by specifiing the --logfile flag of the start command 
 
 # Roadmap
 * "init" command to create a project
