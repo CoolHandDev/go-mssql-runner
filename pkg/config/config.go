@@ -17,6 +17,7 @@ type MssqlCn struct {
 	Port      string
 	CnTimeout string
 	AppName   string
+	LogLevel  string
 }
 
 //PrjConfig represents the configuration from the json file
@@ -42,7 +43,8 @@ func GetCnString(c MssqlCn) string {
 		";database=" + c.Database +
 		";port=" + c.Port +
 		";connection timeout=" + c.CnTimeout +
-		";app name=" + c.AppName
+		";app name=" + c.AppName +
+		";log=" + c.LogLevel
 }
 
 var wrkConfig PrjConfig

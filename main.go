@@ -19,10 +19,6 @@ import "github.com/coolhanddev/go-mssql-runner/cmd"
 /*
 	TODO
 		1) add "init" command to stub out config and project folder. Include example scripts.
-		2) add "log" flag to start command with different levels of verbosity:
-			a) verbose -- filename, duration, query result information and query text included
-			b) medium -- filename, duration and query result information included
-			b) default -- only filename and run duration included
 */
 
 //Version stores the app version from the git tag. Make sure to use the build command below

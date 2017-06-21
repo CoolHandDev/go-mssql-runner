@@ -12,20 +12,20 @@ func TestMakeConnectionString(t *testing.T) {
 	Convey("Given that all connection values are set", t, func() {
 		cases := make(map[string]MssqlCn)
 		//Case 1
-		cn1 := MssqlCn{UserName: "testuser", Password: "testpassword", Server: "testhost", Database: "testdatabase", Port: "1433", AppName: "test-app-name", CnTimeout: "600"}
-		cases["user id=testuser"+";password=testpassword"+";server=testhost"+";database=testdatabase"+";port=1433"+";connection timeout=600"+";app name=test-app-name"] = cn1
+		cn1 := MssqlCn{UserName: "testuser", Password: "testpassword", Server: "testhost", Database: "testdatabase", Port: "1433", AppName: "test-app-name", CnTimeout: "600", LogLevel: "4"}
+		cases["user id=testuser"+";password=testpassword"+";server=testhost"+";database=testdatabase"+";port=1433"+";connection timeout=600"+";app name=test-app-name"+";log=4"] = cn1
 		//Case 2
-		cn2 := MssqlCn{UserName: "anotheruser", Password: "anotherpassword", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900"}
-		cases["user id=anotheruser"+";password=anotherpassword"+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"] = cn2
+		cn2 := MssqlCn{UserName: "anotheruser", Password: "anotherpassword", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900", LogLevel: "63"}
+		cases["user id=anotheruser"+";password=anotherpassword"+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"+";log=63"] = cn2
 		//Case 3
-		cn3 := MssqlCn{UserName: "anotheruser", Password: "", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900"}
-		cases["user id=anotheruser"+";password="+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"] = cn3
+		cn3 := MssqlCn{UserName: "anotheruser", Password: "", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900", LogLevel: ""}
+		cases["user id=anotheruser"+";password="+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"+";log="] = cn3
 
 		Convey("When they are used to construct a connectrion string", func() {
 
 			Convey("The output should be a MSSQL connection string consisting of all those values", func() {
 				for k, v := range cases {
-					So(k, ShouldEqual, GetCnString(v))
+					So(GetCnString(v), ShouldEqual, k)
 				}
 			})
 
