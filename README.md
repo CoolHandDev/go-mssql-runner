@@ -118,6 +118,7 @@ to run the scripts against a SQL Server instance.
     -s, --server string     SQL Server host. *Required
     -t, --timeout string    Connection timeout in seconds (default "14400")
     -u, --username string   SQL Server user name. *Required
+    -l, --loglevel string   Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
 ```
 
 ### Minimum information for execution
@@ -167,7 +168,7 @@ the example below where the config location is overriden by the value passed in 
 c:\MyDBProject>go-mssql-runner start -c /SomeOtherProjectFolder/mssqlrun.conf.json
 ``` 
 
-Linux and OSX usage is similar. Assuming the executable is made globally available by adding its location to the PATH via an init script
+Linux and OSX usage are similar. Assuming the executable is made globally available by adding its location to the PATH via an init script
 ```
 $ go-mssql-runner -u sa -p secret -s localhost -d adventureworks2012 -c ~/MyDBProject/mssqlrun.conf.json
 ```
@@ -185,14 +186,11 @@ $ go-mssql-runner start
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
 # Tips and Tricks
-*TBD
+* To save output to a log file, simply redirect/pipe the stout of the command to a file. 
+* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command 
 
 # Roadmap
 * "init" command to create a project
-*  --log flag to "start" command and allow different levels of logging output verbosity:
-    * default:  display filename and overall execution duration
-    * medium: display filename, overall execution duration, and query output if applicable
-    * verbose: all of #2 plus display the sql that was executed
 * support for encrypting and decrypting schema and process script files    
 * support for connection encryption to allow use of cloud servers. Azure and AWS require encryption.
 * update to support Context
