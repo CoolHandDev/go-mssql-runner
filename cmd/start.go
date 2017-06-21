@@ -20,6 +20,8 @@ import (
 	"os"
 	"time"
 
+	"io"
+
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
 	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
 	"github.com/spf13/cobra"
@@ -35,6 +37,8 @@ var cnTimeout string
 var appName string
 var logLevel string
 var cn config.MssqlCn
+var logToFile string
+var logFileName os.File
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -109,6 +113,17 @@ Different log levels can be set via the -l flag.
 		cn.CnTimeout = cnTimeout
 		cn.LogLevel = logLevel
 		startTime := time.Now()
+		//set up logging. we want to log both to stdout and to a file
+		if logToFile != "" {
+			//if file already exists then append. log rotation done manually by user
+			logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
+			if err != nil {
+				log.Fatal(err)
+			}
+			mw := io.MultiWriter(os.Stdout, logFileName)
+			log.SetOutput(mw)
+		}
+
 		log.Println("Opening database", "=", cn.Server, "/", cn.Database)
 		mssql.OpenCn(config.GetCnString(cn))
 		log.Println("Loading configuration", "=", configFile)
@@ -121,7 +136,7 @@ Different log levels can be set via the -l flag.
 		mssql.RunScripts(config.GetProcessScripts())
 		elapsed := time.Since(startTime)
 		log.Println("Total time elapsed", "=", elapsed)
-
+		logFileName.Close()
 	},
 }
 
@@ -147,4 +162,5 @@ func init() {
 	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
+	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
 }
