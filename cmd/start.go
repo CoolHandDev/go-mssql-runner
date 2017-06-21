@@ -33,6 +33,7 @@ var database string
 var port string
 var cnTimeout string
 var appName string
+var logLevel string
 var cn config.MssqlCn
 
 // startCmd represents the start command
@@ -61,13 +62,21 @@ Specifying parameter values will override the environment settings.
 
 Examples:
 Passing parameters
-> go-mssql-runner -u dbuser -p secretpass -s 172.0.0.1 -d mydatabasename -c x:\workspace\mssqlrun.conf.json
+> go-mssql-runner start -u dbuser -p secretpass -s 172.0.0.1 -d mydatabasename -c x:\workspace\mssqlrun.conf.json
 
-Environment variables are preset 
-> go-mssql-runner 
+When environment variables are set, then just run  
+> go-mssql-runner start
 
-Google how to set environment variables for your OS if you are not familiar
-with the concept.
+Different log levels can be set via the -l flag.
+
+0 no logging
+1 log errors
+2 log messages 
+4 log rows affected 
+8 trace sql statements 
+16 log statement parameters 
+32 log transaction begin/end 
+63 full logging
 
 `,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -98,13 +107,16 @@ with the concept.
 		cn.Port = port
 		cn.AppName = appName
 		cn.CnTimeout = cnTimeout
+		cn.LogLevel = logLevel
 		startTime := time.Now()
 		log.Println("Opening database", "=", cn.Server, "/", cn.Database)
 		mssql.OpenCn(config.GetCnString(cn))
 		log.Println("Loading configuration", "=", configFile)
 		config.ReadConfig(configFile)
+		log.Println("================================================")
 		log.Println("Executing schema scripts")
 		mssql.RunScripts(config.GetSchemaScripts())
+		log.Println("================================================")
 		log.Println("Executing process scripts")
 		mssql.RunScripts(config.GetProcessScripts())
 		elapsed := time.Since(startTime)
@@ -125,6 +137,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	logLevelMsg := "Specifies level of verbosity for SQL log output. See start command help (above) for details"
 	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "The configuration file")
 	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
 	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
@@ -133,4 +146,5 @@ func init() {
 	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
 	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
+	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
 }
