@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"time"
+
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
 )
 
@@ -45,6 +47,8 @@ func RunScripts(s []string) {
 //ExecScript executes a script
 func ExecScript(s string) {
 	defer log.Println("-------------------------------")
+	timer := queryTimer(s)
+	defer timer()
 	_, err := db.Exec(s)
 	if err != nil {
 		log.Fatal(err)
@@ -63,4 +67,13 @@ func ReadScript(s string) string {
 		log.Fatal(err, s)
 	}
 	return string(qry)
+}
+
+//queryTimer returns a timer function
+func queryTimer(n string) func() {
+	start := time.Now()
+	return func() {
+		duration := time.Now().Sub(start)
+		log.Println(n, "completed in", duration)
+	}
 }
