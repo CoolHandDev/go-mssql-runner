@@ -36,8 +36,11 @@ func RunScripts(s []string) {
 	if len(s) > 0 {
 		for _, script := range s {
 			log.Println("-------------------------------")
+			timer := queryTimer(script)
 			log.Println("Executing script file", "=", script)
 			ExecScript(ReadScript(script))
+			timer()
+			log.Println("-------------------------------")
 		}
 	} else {
 		log.Println("No schema files processed.")
@@ -46,9 +49,6 @@ func RunScripts(s []string) {
 
 //ExecScript executes a script
 func ExecScript(s string) {
-	defer log.Println("-------------------------------")
-	timer := queryTimer(s)
-	defer timer()
 	_, err := db.Exec(s)
 	if err != nil {
 		log.Fatal(err)
