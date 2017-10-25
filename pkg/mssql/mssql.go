@@ -53,11 +53,6 @@ func ExecScript(s string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 //ReadScript loads script file
