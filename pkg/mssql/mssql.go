@@ -16,7 +16,7 @@ var db *sql.DB
 //OpenCn opens a connection
 func OpenCn(cn string) {
 	var err error
-	db, err = sql.Open("mssql", cn)
+	db, err = sql.Open("sqlserver", cn)
 	if err != nil {
 		log.Fatal(err)
 	}
