@@ -33,7 +33,10 @@ func RunScripts(s []string) {
 			log.Println("-------------------------------")
 			timer := queryTimer(script)
 			log.Println("Executing script file", "=", script)
-			ExecScript(gdb, ReadScript(script)) //gdb is global, but we need to be able to mock db in testing
+			_, err := ExecScript(gdb, ReadScript(script)) //gdb is global, but we need to be able to mock db in testing
+			if err != nil {
+				log.Fatal(err)
+			}
 			timer()
 			log.Println("-------------------------------")
 		}
@@ -43,16 +46,17 @@ func RunScripts(s []string) {
 }
 
 //ExecScript executes a script
-func ExecScript(db *sql.DB, s string) {
-	err := db.Ping()
+func ExecScript(db *sql.DB, s string) (r sql.Result, err error) {
+	err = db.Ping()
 	if err != nil {
 		log.Println("No database connection. Cannnot run schema scripts")
 		os.Exit(-1)
 	}
-	_, err = db.Exec(s)
+	r, err = db.Exec(s)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
+	return r, nil
 }
 
 //ReadScript loads script file
