@@ -130,10 +130,16 @@ Different log levels can be set via the -l flag.
 		config.ReadConfig(configFile)
 		log.Println("================================================")
 		log.Println("Executing schema scripts")
-		mssql.RunScripts(config.GetSchemaScripts())
+		_, err := mssql.RunScripts(config.GetSchemaScripts())
+		if err != nil {
+			log.Fatal(err)
+		}
 		log.Println("================================================")
 		log.Println("Executing process scripts")
-		mssql.RunScripts(config.GetProcessScripts())
+		_, err = mssql.RunScripts(config.GetProcessScripts())
+		if err != nil {
+			log.Fatal(err)
+		}
 		elapsed := time.Since(startTime)
 		log.Println("Total time elapsed", "=", elapsed)
 		logFileName.Close()

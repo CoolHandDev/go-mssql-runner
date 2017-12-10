@@ -2,6 +2,7 @@ package mssql
 
 import (
 	"database/sql"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -27,22 +28,23 @@ func OpenCn(cn string) {
 }
 
 //RunScripts executes the schema scripts
-func RunScripts(s []string) {
+func RunScripts(s []string) (c int, err error) {
 	if len(s) > 0 {
-		for _, script := range s {
+		for i, script := range s {
 			log.Println("-------------------------------")
 			timer := queryTimer(script)
 			log.Println("Executing script file", "=", script)
 			_, err := ExecScript(gdb, ReadScript(script)) //gdb is global, but we need to be able to mock db in testing
 			if err != nil {
-				log.Fatal(err)
+				log.Println("An error was encountered in the script:", script)
+				return i, err
 			}
 			timer()
 			log.Println("-------------------------------")
 		}
-	} else {
-		log.Println("No schema files processed.")
+		return len(s), nil
 	}
+	return 0, errors.New("no schema files processed")
 }
 
 //ExecScript executes a script
