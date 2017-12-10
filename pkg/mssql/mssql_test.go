@@ -3,6 +3,8 @@ package mssql
 import (
 	"testing"
 
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
+
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -27,6 +29,28 @@ func TestReadScript(t *testing.T) {
 
 			Convey("The contents of schema1 should be loaded", func() {
 				So(scpTxt, ShouldEqual, expected)
+			})
+		})
+	})
+}
+
+func TestExecScript(t *testing.T) {
+	Convey("Given that a script is executed", t, func() {
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		Convey("When process1.sql is executed", func() {
+			mock.ExpectExec(processFile1).WillReturnResult(sqlmock.NewResult(1, 1))
+			_, _ = ExecScript(db, processFile1)
+
+			Convey("The expectations should be fulfilled", func() {
+
+				if err := mock.ExpectationsWereMet(); err != nil {
+					t.Errorf("there were unfulfilled expectations: %s", err)
+				}
 			})
 		})
 	})
