@@ -28,11 +28,6 @@ func OpenCn(cn string) {
 
 //RunScripts executes the schema scripts
 func RunScripts(s []string) {
-	err := db.Ping()
-	if err != nil {
-		log.Println("No database connection. Cannnot run schema scripts")
-		os.Exit(-1)
-	}
 	if len(s) > 0 {
 		for _, script := range s {
 			log.Println("-------------------------------")
@@ -49,7 +44,12 @@ func RunScripts(s []string) {
 
 //ExecScript executes a script
 func ExecScript(s string) {
-	_, err := db.Exec(s)
+	err := db.Ping()
+	if err != nil {
+		log.Println("No database connection. Cannnot run schema scripts")
+		os.Exit(-1)
+	}
+	_, err = db.Exec(s)
 	if err != nil {
 		log.Fatal(err)
 	}

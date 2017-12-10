@@ -7,6 +7,8 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+var testConfig = "../../example/mssqlrun.conf.json"
+
 func TestMakeConnectionString(t *testing.T) {
 
 	Convey("Given that all connection values are set", t, func() {
@@ -48,7 +50,7 @@ func TestLoadConfiguration(t *testing.T) {
 
 		Convey("When it is loaded", func() {
 
-			ReadConfig("../../mssqlrun.conf.json")
+			ReadConfig(testConfig)
 			result := wrkConfig
 			Convey("The values from the file should be available to the app", func() {
 				So(result, ShouldResemble, expected)
