@@ -11,16 +11,16 @@ import (
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
 )
 
-var db *sql.DB
+var gdb *sql.DB
 
 //OpenCn opens a connection
 func OpenCn(cn string) {
 	var err error
-	db, err = sql.Open("sqlserver", cn)
+	gdb, err = sql.Open("sqlserver", cn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = db.Ping()
+	err = gdb.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +33,7 @@ func RunScripts(s []string) {
 			log.Println("-------------------------------")
 			timer := queryTimer(script)
 			log.Println("Executing script file", "=", script)
-			ExecScript(ReadScript(script))
+			ExecScript(gdb, ReadScript(script)) //gdb is global, but we need to be able to mock db in testing
 			timer()
 			log.Println("-------------------------------")
 		}
@@ -43,7 +43,7 @@ func RunScripts(s []string) {
 }
 
 //ExecScript executes a script
-func ExecScript(s string) {
+func ExecScript(db *sql.DB, s string) {
 	err := db.Ping()
 	if err != nil {
 		log.Println("No database connection. Cannnot run schema scripts")
