@@ -61,6 +61,7 @@ func TestExecScript(t *testing.T) {
 				if err := mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
+				So(mock.ExpectationsWereMet, ShouldNotEqual, err)
 			})
 		})
 	})
@@ -85,6 +86,20 @@ func TestRunScripts(t *testing.T) {
 				if err := mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
+				So(mock.ExpectationsWereMet, ShouldNotEqual, err)
+			})
+		})
+
+		Convey("When schema scripts are executed", func() {
+			mock.ExpectExec(`select 'schema 1'`).WillReturnResult(sqlmock.NewResult(1, 1))
+			mock.ExpectExec(`select 'schema 2'`).WillReturnResult(sqlmock.NewResult(1, 1))
+			_, _ = RunScripts(schemaFiles)
+
+			Convey("The expectations should be fulfilled", func() {
+				if err := mock.ExpectationsWereMet(); err != nil {
+					t.Errorf("there were unfulfilled expectations: %s", err)
+				}
+				So(mock.ExpectationsWereMet, ShouldNotEqual, err)
 			})
 		})
 
