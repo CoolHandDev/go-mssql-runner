@@ -1,6 +1,8 @@
 package mssql
 
 import (
+	"io/ioutil"
+	"log"
 	"testing"
 
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
@@ -56,11 +58,35 @@ func TestExecScript(t *testing.T) {
 			_, _ = ExecScript(db, processFile1)
 
 			Convey("The expectations should be fulfilled", func() {
-
 				if err := mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
 			})
 		})
+	})
+}
+
+func TestRunScripts(t *testing.T) {
+	Convey("Given that a set of scripts are executed", t, func() {
+		log.SetOutput(ioutil.Discard)
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+		Gdb = db
+
+		Convey("When process scripts are executed", func() {
+			mock.ExpectExec(`select 'process 1'`).WillReturnResult(sqlmock.NewResult(1, 1))
+			mock.ExpectExec(`select 'process 2'`).WillReturnResult(sqlmock.NewResult(1, 1))
+			_, _ = RunScripts(processFiles)
+
+			Convey("The expectations should be fulfilled", func() {
+				if err := mock.ExpectationsWereMet(); err != nil {
+					t.Errorf("there were unfulfilled expectations: %s", err)
+				}
+			})
+		})
+
 	})
 }
