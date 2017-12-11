@@ -8,13 +8,20 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var processFile1 = "../../example/process/process1.sql"
-var schemaFile1 = "../../example/schema/schema1.sql"
+var processFiles = []string{
+	"../../example/process/process1.sql",
+	"../../example/process/process2.sql",
+}
+var schemaFiles = []string{
+	"../../example/schema/schema1.sql",
+	"../../example/schema/schema2.sql",
+}
 
 func TestReadScript(t *testing.T) {
 	Convey("Given that a script file is read", t, func() {
 
 		Convey("When process1.sql is read", func() {
+			processFile1 := processFiles[0]
 			scpTxt := ReadScript(processFile1)
 			expected := `select 'process 1'`
 
@@ -24,6 +31,7 @@ func TestReadScript(t *testing.T) {
 		})
 
 		Convey("When schema1.sql is read", func() {
+			schemaFile1 := schemaFiles[0]
 			scpTxt := ReadScript(schemaFile1)
 			expected := `select 'schema 1'`
 
@@ -43,6 +51,7 @@ func TestExecScript(t *testing.T) {
 		defer db.Close()
 
 		Convey("When process1.sql is executed", func() {
+			processFile1 := processFiles[0]
 			mock.ExpectExec(processFile1).WillReturnResult(sqlmock.NewResult(1, 1))
 			_, _ = ExecScript(db, processFile1)
 
