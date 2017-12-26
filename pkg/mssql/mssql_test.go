@@ -80,8 +80,17 @@ func TestRunScripts(t *testing.T) {
 		Convey("When process scripts are executed", func() {
 			mock.ExpectExec(`select 'process 1'`).WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectExec(`select 'process 2'`).WillReturnResult(sqlmock.NewResult(1, 1))
-			_, _ = RunScripts(processFiles)
+			i, err := RunScripts(processFiles)
 
+			Convey("There should be no errors", func() {
+				if err != nil {
+					t.Errorf("errors were encountered")
+				}
+				So(err, ShouldBeNil)
+			})
+			Convey("Count of files run is 2", func() {
+				So(i, ShouldEqual, 2)
+			})
 			Convey("The expectations should be fulfilled", func() {
 				if err := mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
@@ -93,8 +102,17 @@ func TestRunScripts(t *testing.T) {
 		Convey("When schema scripts are executed", func() {
 			mock.ExpectExec(`select 'schema 1'`).WillReturnResult(sqlmock.NewResult(1, 1))
 			mock.ExpectExec(`select 'schema 2'`).WillReturnResult(sqlmock.NewResult(1, 1))
-			_, _ = RunScripts(schemaFiles)
+			i, err := RunScripts(schemaFiles)
 
+			Convey("There should be no errors", func() {
+				if err != nil {
+					t.Errorf("errors were encountered")
+				}
+				So(err, ShouldBeNil)
+			})
+			Convey("Count of files run is 2", func() {
+				So(i, ShouldEqual, 2)
+			})
 			Convey("The expectations should be fulfilled", func() {
 				if err := mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
