@@ -83,67 +83,69 @@ Different log levels can be set via the -l flag.
 63 full logging
 
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		//check if required parameters are passed
-		if userName == "" || password == "" || server == "" || database == "" || configFile == "" {
-			//if required parameters are not met, check environment variables
-			if os.Getenv("GOSQLR_CONFIGFILE") == "" || os.Getenv("GOSQLR_USERNAME") == "" ||
-				os.Getenv("GOSQLR_PASSWORD") == "" || os.Getenv("GOSQLR_SERVER") == "" ||
-				os.Getenv("GOSQLR_DATABASE") == "" {
+	Run: start,
+}
 
-				fmt.Println("Please pass in the required values. ")
-				fmt.Println("go-mssql-runner start -h for more information.")
-				os.Exit(-1)
-			} else if os.Getenv("GOSQLR_CONFIGFILE") != "" && os.Getenv("GOSQLR_USERNAME") != "" &&
-				os.Getenv("GOSQLR_PASSWORD") != "" && os.Getenv("GOSQLR_SERVER") != "" &&
-				os.Getenv("GOSQLR_DATABASE") != "" {
-				configFile = os.Getenv("GOSQLR_CONFIGFILE")
-				userName = os.Getenv("GOSQLR_USERNAME")
-				password = os.Getenv("GOSQLR_PASSWORD")
-				server = os.Getenv("GOSQLR_SERVER")
-				database = os.Getenv("GOSQLR_DATABASE")
-			}
-		}
-		cn.UserName = userName
-		cn.Password = password
-		cn.Server = server
-		cn.Database = database
-		cn.Port = port
-		cn.AppName = appName
-		cn.CnTimeout = cnTimeout
-		cn.LogLevel = logLevel
-		startTime := time.Now()
-		//set up logging. we want to log both to stdout and to a file
-		if logToFile != "" {
-			//if file already exists then append. log rotation done manually by user
-			logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
-			if err != nil {
-				log.Fatal(err)
-			}
-			mw := io.MultiWriter(os.Stdout, logFileName)
-			log.SetOutput(mw)
-		}
+func start(cmd *cobra.Command, args []string) {
+	//check if required parameters are passed
+	if userName == "" || password == "" || server == "" || database == "" || configFile == "" {
+		//if required parameters are not met, check environment variables
+		if os.Getenv("GOSQLR_CONFIGFILE") == "" || os.Getenv("GOSQLR_USERNAME") == "" ||
+			os.Getenv("GOSQLR_PASSWORD") == "" || os.Getenv("GOSQLR_SERVER") == "" ||
+			os.Getenv("GOSQLR_DATABASE") == "" {
 
-		log.Println("Opening database", "=", cn.Server, "/", cn.Database)
-		mssql.OpenCn(config.GetCnString(cn))
-		log.Println("Loading configuration", "=", configFile)
-		config.ReadConfig(configFile)
-		log.Println("================================================")
-		log.Println("Executing schema scripts")
-		_, err := mssql.RunScripts(config.GetSchemaScripts())
+			fmt.Println("Please pass in the required values. ")
+			fmt.Println("go-mssql-runner start -h for more information.")
+			os.Exit(-1)
+		} else if os.Getenv("GOSQLR_CONFIGFILE") != "" && os.Getenv("GOSQLR_USERNAME") != "" &&
+			os.Getenv("GOSQLR_PASSWORD") != "" && os.Getenv("GOSQLR_SERVER") != "" &&
+			os.Getenv("GOSQLR_DATABASE") != "" {
+			configFile = os.Getenv("GOSQLR_CONFIGFILE")
+			userName = os.Getenv("GOSQLR_USERNAME")
+			password = os.Getenv("GOSQLR_PASSWORD")
+			server = os.Getenv("GOSQLR_SERVER")
+			database = os.Getenv("GOSQLR_DATABASE")
+		}
+	}
+	cn.UserName = userName
+	cn.Password = password
+	cn.Server = server
+	cn.Database = database
+	cn.Port = port
+	cn.AppName = appName
+	cn.CnTimeout = cnTimeout
+	cn.LogLevel = logLevel
+	startTime := time.Now()
+	//set up logging. we want to log both to stdout and to a file
+	if logToFile != "" {
+		//if file already exists then append. log rotation done manually by user
+		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Println("================================================")
-		log.Println("Executing process scripts")
-		_, err = mssql.RunScripts(config.GetProcessScripts())
-		if err != nil {
-			log.Fatal(err)
-		}
-		elapsed := time.Since(startTime)
-		log.Println("Total time elapsed", "=", elapsed)
-		logFileName.Close()
-	},
+		mw := io.MultiWriter(os.Stdout, logFileName)
+		log.SetOutput(mw)
+	}
+
+	log.Println("Opening database", "=", cn.Server, "/", cn.Database)
+	mssql.OpenCn(config.GetCnString(cn))
+	log.Println("Loading configuration", "=", configFile)
+	config.ReadConfig(configFile)
+	log.Println("================================================")
+	log.Println("Executing schema scripts")
+	_, err := mssql.RunScripts(config.GetSchemaScripts())
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("================================================")
+	log.Println("Executing process scripts")
+	_, err = mssql.RunScripts(config.GetProcessScripts())
+	if err != nil {
+		log.Fatal(err)
+	}
+	elapsed := time.Since(startTime)
+	log.Println("Total time elapsed", "=", elapsed)
+	logFileName.Close()
 }
 
 func init() {
