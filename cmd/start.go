@@ -127,25 +127,24 @@ func start(cmd *cobra.Command, args []string) {
 		mw := io.MultiWriter(os.Stdout, logFileName)
 		log.SetOutput(mw)
 	}
-
-	log.Println("Opening database", "=", cn.Server, "/", cn.Database)
+	log.WithFields(log.Fields{"server": cn.Server, "database": cn.Database}).Info("opening database")
 	mssql.OpenCn(config.GetCnString(cn))
-	log.Println("Loading configuration", "=", configFile)
+	log.WithFields(log.Fields{"config_file": configFile}).Info("loading configuration")
 	config.ReadConfig(configFile)
-	log.Println("================================================")
-	log.Println("Executing schema scripts")
+	log.Info("================================================")
+	log.Info("Executing schema scripts")
 	_, err := mssql.RunScripts(config.GetSchemaScripts())
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("================================================")
-	log.Println("Executing process scripts")
+	log.Info("================================================")
+	log.Info("Executing process scripts")
 	_, err = mssql.RunScripts(config.GetProcessScripts())
 	if err != nil {
 		log.Fatal(err)
 	}
 	elapsed := time.Since(startTime)
-	log.Println("Total time elapsed", "=", elapsed)
+	log.Info("Total time elapsed", "=", elapsed)
 	logFileName.Close()
 }
 
