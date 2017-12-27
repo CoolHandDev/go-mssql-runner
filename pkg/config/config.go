@@ -41,13 +41,6 @@ var wrkConfig PrjConfig
 //wrkPath represents the working path
 var wrkPath string
 
-func init() {
-	Formatter := new(log.TextFormatter)
-	Formatter.TimestampFormat = "01-02-2006 15:04:05"
-	Formatter.FullTimestamp = true
-	log.SetFormatter(Formatter)
-}
-
 //GetCnString returns a sql server connection string
 func GetCnString(c MssqlCn) string {
 	return "user id=" + c.UserName +

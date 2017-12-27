@@ -116,10 +116,7 @@ func start(cmd *cobra.Command, args []string) {
 	cn.LogLevel = logLevel
 	startTime := time.Now()
 	//set up logging. we want to log both to stdout and to a file
-	Formatter := new(log.TextFormatter)
-	Formatter.TimestampFormat = "01-02-2006 15:04:05"
-	Formatter.FullTimestamp = true
-	log.SetFormatter(Formatter)
+	log.SetFormatter(&log.JSONFormatter{TimestampFormat: "01-02-2006 15:04:05"})
 	if logToFile != "" {
 		//if file already exists then append. log rotation done manually by user
 		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)

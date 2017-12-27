@@ -14,13 +14,6 @@ import (
 //Gdb is the database object
 var Gdb *sql.DB
 
-func init() {
-	Formatter := new(log.TextFormatter)
-	Formatter.TimestampFormat = "01-02-2006 15:04:05"
-	Formatter.FullTimestamp = true
-	log.SetFormatter(Formatter)
-}
-
 //OpenCn opens a connection
 func OpenCn(cn string) {
 	var err error
