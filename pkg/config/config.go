@@ -36,9 +36,14 @@ type CfgScripts struct {
 	Process []string
 }
 
+var wrkConfig PrjConfig
+
+//wrkPath represents the working path
+var wrkPath string
+
 func init() {
 	Formatter := new(log.TextFormatter)
-	Formatter.TimestampFormat = "02-01-2006 15:04:05"
+	Formatter.TimestampFormat = "01-02-2006 15:04:05"
 	Formatter.FullTimestamp = true
 	log.SetFormatter(Formatter)
 }
@@ -55,25 +60,20 @@ func GetCnString(c MssqlCn) string {
 		";log=" + c.LogLevel
 }
 
-var wrkConfig PrjConfig
-
-//wrkPath represents the working path
-var wrkPath string
-
 //ReadConfig reads the config file based on location passed interface{}
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 	wrkPath = filepath.Dir(f)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
-		log.Println("error reading configuration")
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
 	if err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 }
 

@@ -117,7 +117,7 @@ func start(cmd *cobra.Command, args []string) {
 	startTime := time.Now()
 	//set up logging. we want to log both to stdout and to a file
 	Formatter := new(log.TextFormatter)
-	Formatter.TimestampFormat = "02-01-2006 15:04:05"
+	Formatter.TimestampFormat = "01-02-2006 15:04:05"
 	Formatter.FullTimestamp = true
 	log.SetFormatter(Formatter)
 	if logToFile != "" {
