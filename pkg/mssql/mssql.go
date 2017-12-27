@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"io/ioutil"
-	"os"
 	"time"
 
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
@@ -33,10 +32,10 @@ func RunScripts(s []string) (c int, err error) {
 		for i, script := range s {
 			log.Println("-------------------------------")
 			timer := queryTimer(script)
-			log.Println("Executing script file", "=", script)
-			_, err := ExecScript(Gdb, ReadScript(script)) //gdb is global, but we need to be able to mock db in testing
+			log.WithFields(log.Fields{"file_name": script}).Info("Executing script file")
+			_, err := ExecScript(Gdb, ReadScript(script)) //even gdb is global, pass it in so mocking is possible
 			if err != nil {
-				log.Println("An error was encountered in the script:", script)
+				log.WithFields(log.Fields{"file_name": script}).Error(err)
 				return i, err
 			}
 			timer()
@@ -51,8 +50,7 @@ func RunScripts(s []string) (c int, err error) {
 func ExecScript(db *sql.DB, s string) (r sql.Result, err error) {
 	err = db.Ping()
 	if err != nil {
-		log.Println("No database connection. Cannnot run schema scripts")
-		os.Exit(-1)
+		log.Fatal("No database connection. Cannnot run schema scripts")
 	}
 	r, err = db.Exec(s)
 	if err != nil {
@@ -65,7 +63,7 @@ func ExecScript(db *sql.DB, s string) (r sql.Result, err error) {
 func ReadScript(s string) string {
 	qry, err := ioutil.ReadFile(s)
 	if err != nil {
-		log.Fatal(err, s)
+		log.WithFields(log.Fields{"file_name": s}).Fatal(err, s)
 	}
 	return string(qry)
 }
@@ -75,6 +73,6 @@ func queryTimer(n string) func() {
 	start := time.Now()
 	return func() {
 		duration := time.Now().Sub(start)
-		log.Println(n, "completed in", duration)
+		log.WithFields(log.Fields{"file_name": n}).Info("Completed in ", duration)
 	}
 }
