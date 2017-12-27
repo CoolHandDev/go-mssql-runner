@@ -2,12 +2,11 @@ package mssql
 
 import (
 	"io/ioutil"
-	"log"
 	"testing"
 
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
-
+	log "github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var processFiles = []string{
