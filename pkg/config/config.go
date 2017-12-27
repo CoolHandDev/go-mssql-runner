@@ -3,9 +3,10 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //MssqlCn represents the connection string
@@ -33,6 +34,13 @@ type PrjConfig struct {
 type CfgScripts struct {
 	Schema  []string
 	Process []string
+}
+
+func init() {
+	Formatter := new(log.TextFormatter)
+	Formatter.TimestampFormat = "02-01-2006 15:04:05"
+	Formatter.FullTimestamp = true
+	log.SetFormatter(Formatter)
 }
 
 //GetCnString returns a sql server connection string

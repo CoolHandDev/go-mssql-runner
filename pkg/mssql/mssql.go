@@ -4,16 +4,22 @@ import (
 	"database/sql"
 	"errors"
 	"io/ioutil"
-	"log"
 	"os"
-
 	"time"
 
 	_ "github.com/denisenkom/go-mssqldb" //for accessing ms sql server
+	log "github.com/sirupsen/logrus"
 )
 
 //Gdb is the database object
 var Gdb *sql.DB
+
+func init() {
+	Formatter := new(log.TextFormatter)
+	Formatter.TimestampFormat = "02-01-2006 15:04:05"
+	Formatter.FullTimestamp = true
+	log.SetFormatter(Formatter)
+}
 
 //OpenCn opens a connection
 func OpenCn(cn string) {

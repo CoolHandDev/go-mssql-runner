@@ -16,14 +16,13 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	"io"
 	"os"
 	"time"
 
-	"io"
-
 	"github.com/coolhanddev/go-mssql-runner/pkg/config"
 	"github.com/coolhanddev/go-mssql-runner/pkg/mssql"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -117,6 +116,10 @@ func start(cmd *cobra.Command, args []string) {
 	cn.LogLevel = logLevel
 	startTime := time.Now()
 	//set up logging. we want to log both to stdout and to a file
+	Formatter := new(log.TextFormatter)
+	Formatter.TimestampFormat = "02-01-2006 15:04:05"
+	Formatter.FullTimestamp = true
+	log.SetFormatter(Formatter)
 	if logToFile != "" {
 		//if file already exists then append. log rotation done manually by user
 		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
