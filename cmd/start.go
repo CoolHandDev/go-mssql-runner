@@ -38,6 +38,7 @@ var logLevel string
 var cn config.MssqlCn
 var logToFile string
 var logFileName os.File
+var logFormat string
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -112,8 +113,11 @@ func start(cmd *cobra.Command, args []string) {
 	cn.LogLevel = logLevel
 	startTime := time.Now()
 	//set up logging. we want to log both to stdout and to a file
-	//log.SetFormatter(&log.JSONFormatter{TimestampFormat: "01-02-2006 15:04:05"})
-	log.SetFormatter(&log.TextFormatter{TimestampFormat: "01-02-2006 15:04:05", FullTimestamp: true})
+	if logFormat == "JSON" {
+		log.SetFormatter(&log.JSONFormatter{TimestampFormat: "01-02-2006 15:04:05"})
+	} else {
+		log.SetFormatter(&log.TextFormatter{TimestampFormat: "01-02-2006 15:04:05", FullTimestamp: true})
+	}
 	if logToFile != "" {
 		//if file already exists then append. log rotation done manually by user
 		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
@@ -172,4 +176,5 @@ func init() {
 	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
 	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
 	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
+	startCmd.Flags().StringVarP(&logFormat, "logformat", "", "text", "Format of log: JSON or text")
 }
