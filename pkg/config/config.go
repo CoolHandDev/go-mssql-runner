@@ -19,6 +19,7 @@ type MssqlCn struct {
 	CnTimeout string
 	AppName   string
 	LogLevel  string
+	Encrypt   bool
 }
 
 //PrjConfig represents the configuration from the json file
@@ -43,7 +44,9 @@ var wrkPath string
 
 //GetCnString returns a sql server connection string
 func GetCnString(c MssqlCn) string {
-	return "user id=" + c.UserName +
+	var cnStr string
+
+	cnStr += "user id=" + c.UserName +
 		";password=" + c.Password +
 		";server=" + c.Server +
 		";database=" + c.Database +
@@ -51,6 +54,11 @@ func GetCnString(c MssqlCn) string {
 		";connection timeout=" + c.CnTimeout +
 		";app name=" + c.AppName +
 		";log=" + c.LogLevel
+	if c.Encrypt {
+		cnStr += ";encrypt=true;TrustServerCertificate=true"
+	}
+
+	return cnStr
 }
 
 //ReadConfig reads the config file based on location passed interface{}

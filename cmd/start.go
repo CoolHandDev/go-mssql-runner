@@ -39,6 +39,7 @@ var cn config.MssqlCn
 var logToFile string
 var logFileName os.File
 var logFormat string
+var encryptCn bool
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -111,6 +112,7 @@ func start(cmd *cobra.Command, args []string) {
 	cn.AppName = appName
 	cn.CnTimeout = cnTimeout
 	cn.LogLevel = logLevel
+	cn.Encrypt = encryptCn
 	startTime := time.Now()
 	//set up logging. we want to log both to stdout and to a file
 	if logFormat == "JSON" {
@@ -177,4 +179,5 @@ func init() {
 	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
 	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
 	startCmd.Flags().StringVarP(&logFormat, "logformat", "", "text", "Format of log: JSON or text")
+	startCmd.Flags().BoolVarP(&encryptCn, "encrypt-cn", "e", false, "Encrypt SQL Server connection")
 }
