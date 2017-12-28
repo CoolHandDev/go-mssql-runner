@@ -86,16 +86,12 @@ Different log levels can be set via the -l flag.
 }
 
 func start(cmd *cobra.Command, args []string) {
-	//check if required parameters are passed
-	if userName == "" || password == "" || server == "" || database == "" || configFile == "" {
+	if server == "" || database == "" || configFile == "" {
 		//if required parameters are not met, check environment variables
-		if os.Getenv("GOSQLR_CONFIGFILE") == "" || os.Getenv("GOSQLR_USERNAME") == "" ||
-			os.Getenv("GOSQLR_PASSWORD") == "" || os.Getenv("GOSQLR_SERVER") == "" ||
-			os.Getenv("GOSQLR_DATABASE") == "" {
-
+		if os.Getenv("GOSQLR_CONFIGFILE") == "" || os.Getenv("GOSQLR_SERVER") == "" || os.Getenv("GOSQLR_DATABASE") == "" {
 			fmt.Println("Please pass in the required values. ")
 			fmt.Println("go-mssql-runner start -h for more information.")
-			os.Exit(-1)
+			os.Exit(1)
 		} else if os.Getenv("GOSQLR_CONFIGFILE") != "" && os.Getenv("GOSQLR_USERNAME") != "" &&
 			os.Getenv("GOSQLR_PASSWORD") != "" && os.Getenv("GOSQLR_SERVER") != "" &&
 			os.Getenv("GOSQLR_DATABASE") != "" {
@@ -127,8 +123,7 @@ func start(cmd *cobra.Command, args []string) {
 		mw := io.MultiWriter(os.Stdout, logFileName)
 		log.SetOutput(mw)
 	}
-	log.WithFields(log.Fields{"server": cn.Server, "database": cn.Database}).Info("opening database")
-	mssql.OpenCn(config.GetCnString(cn))
+	newDbPool(cn)
 	log.WithFields(log.Fields{"config_file": configFile}).Info("loading configuration")
 	config.ReadConfig(configFile)
 	log.Info("================================================")
@@ -146,6 +141,11 @@ func start(cmd *cobra.Command, args []string) {
 	elapsed := time.Since(startTime)
 	log.Info("Total time elapsed", "=", elapsed)
 	logFileName.Close()
+}
+
+func newDbPool(c config.MssqlCn) {
+	log.WithFields(log.Fields{"server": cn.Server, "database": cn.Database}).Info("opening database")
+	mssql.NewPool(config.GetCnString(c))
 }
 
 func init() {

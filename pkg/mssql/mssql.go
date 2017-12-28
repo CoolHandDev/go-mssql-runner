@@ -13,8 +13,8 @@ import (
 //Gdb is the database object
 var Gdb *sql.DB
 
-//OpenCn opens a connection
-func OpenCn(cn string) {
+//NewPool prepares a new connection pool
+func NewPool(cn string) {
 	var err error
 	Gdb, err = sql.Open("sqlserver", cn)
 	if err != nil {
