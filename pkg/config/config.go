@@ -24,17 +24,17 @@ type MssqlCn struct {
 
 //PrjConfig represents the configuration from the json file
 type PrjConfig struct {
-	Name        string
-	Description string
-	Type        string
-	Version     string
-	Scripts     CfgScripts
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Type        string     `json:"type"`
+	Version     string     `json:"version"`
+	Scripts     CfgScripts `json:"scripts"`
 }
 
 //CfgScripts represents the list of schema and process scripts
 type CfgScripts struct {
-	Schema  []string
-	Process []string
+	Schema  []string `json:"schema"`
+	Process []string `json:"process"`
 }
 
 var wrkConfig PrjConfig
