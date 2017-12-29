@@ -145,7 +145,9 @@ func start(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 	elapsed := time.Since(startTime)
-	log.WithFields(log.Fields{"log_file": logToFile}).Info("Log file created")
+	if logToFile != "" {
+		log.WithFields(log.Fields{"log_file": logToFile}).Info("Log file created")
+	}
 	log.Info("Total time elapsed", "=", elapsed)
 	logFileName.Close()
 }
