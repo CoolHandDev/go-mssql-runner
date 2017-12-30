@@ -57,7 +57,7 @@ func TestExecScript(t *testing.T) {
 			_, _ = ExecScript(db, processFile1)
 
 			Convey("The expectations should be fulfilled", func() {
-				if err := mock.ExpectationsWereMet(); err != nil {
+				if err = mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
 				So(mock.ExpectationsWereMet, ShouldNotEqual, err)
@@ -91,7 +91,7 @@ func TestRunScripts(t *testing.T) {
 				So(i, ShouldEqual, 2)
 			})
 			Convey("The expectations should be fulfilled", func() {
-				if err := mock.ExpectationsWereMet(); err != nil {
+				if err = mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
 				So(mock.ExpectationsWereMet, ShouldNotEqual, err)
@@ -113,7 +113,7 @@ func TestRunScripts(t *testing.T) {
 				So(i, ShouldEqual, 2)
 			})
 			Convey("The expectations should be fulfilled", func() {
-				if err := mock.ExpectationsWereMet(); err != nil {
+				if err = mock.ExpectationsWereMet(); err != nil {
 					t.Errorf("there were unfulfilled expectations: %s", err)
 				}
 				So(mock.ExpectationsWereMet, ShouldNotEqual, err)

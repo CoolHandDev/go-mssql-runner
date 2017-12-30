@@ -72,7 +72,7 @@ func ReadScript(s string) string {
 func queryTimer(n string) func() {
 	start := time.Now()
 	return func() {
-		duration := time.Now().Sub(start)
+		duration := time.Since(start)
 		log.WithFields(log.Fields{"file_name": n}).Info("Completed in ", duration)
 	}
 }

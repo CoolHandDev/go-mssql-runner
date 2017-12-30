@@ -101,27 +101,15 @@ func start(cmd *cobra.Command, args []string) {
 	cn.Encrypt = encryptCn
 	startTime := time.Now()
 	initLogging()
+	defer logFileName.Close()
 	newDbPool(cn)
-	log.WithFields(log.Fields{"config_file": configFile}).Info("loading configuration")
-	config.ReadConfig(configFile)
-	log.Info("================================================")
-	log.Info("Executing schema scripts")
-	_, err := mssql.RunScripts(config.GetSchemaScripts())
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Info("================================================")
-	log.Info("Executing process scripts")
-	_, err = mssql.RunScripts(config.GetProcessScripts())
-	if err != nil {
-		log.Fatal(err)
-	}
+	loadConfig()
+	execScripts()
 	elapsed := time.Since(startTime)
 	if logToFile != "" {
 		log.WithFields(log.Fields{"log_file": logToFile}).Info("Log file created")
 	}
 	log.Info("Total time elapsed", "=", elapsed)
-	logFileName.Close()
 }
 
 func newDbPool(c config.MssqlCn) {
@@ -147,6 +135,25 @@ func initLogging() {
 	}
 }
 
+func loadConfig() {
+	log.WithFields(log.Fields{"config_file": configFile}).Info("loading configuration")
+	config.ReadConfig(configFile)
+}
+
+func execScripts() {
+	log.Info("================================================")
+	log.Info("Executing schema scripts")
+	_, err := mssql.RunScripts(config.GetSchemaScripts())
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Info("================================================")
+	log.Info("Executing process scripts")
+	_, err = mssql.RunScripts(config.GetProcessScripts())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 func init() {
 	RootCmd.AddCommand(startCmd)
 

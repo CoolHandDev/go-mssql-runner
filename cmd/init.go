@@ -41,7 +41,10 @@ func createConfig() {
 			Process: []string{"process-example-1.sql"},
 		},
 	}
-	b, _ := json.MarshalIndent(cfgFile, "", "    ")
+	b, err := json.MarshalIndent(cfgFile, "", "    ")
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = ioutil.WriteFile("mssqlrun.conf.json", b, 0666)
 	if err != nil {
 		log.Fatal(err)
