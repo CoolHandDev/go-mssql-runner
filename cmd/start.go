@@ -100,21 +100,7 @@ func start(cmd *cobra.Command, args []string) {
 	cn.LogLevel = logLevel
 	cn.Encrypt = encryptCn
 	startTime := time.Now()
-	//set up logging. we want to log both to stdout and to a file
-	if logFormat == "JSON" {
-		log.SetFormatter(&log.JSONFormatter{TimestampFormat: "01-02-2006 15:04:05"})
-	} else {
-		log.SetFormatter(&log.TextFormatter{TimestampFormat: "01-02-2006 15:04:05", FullTimestamp: true})
-	}
-	if logToFile != "" {
-		//if file already exists then append. log rotation done manually by user
-		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
-		if err != nil {
-			log.Fatal(err)
-		}
-		mw := io.MultiWriter(os.Stdout, logFileName)
-		log.SetOutput(mw)
-	}
+	initLogging()
 	newDbPool(cn)
 	log.WithFields(log.Fields{"config_file": configFile}).Info("loading configuration")
 	config.ReadConfig(configFile)
@@ -141,6 +127,24 @@ func start(cmd *cobra.Command, args []string) {
 func newDbPool(c config.MssqlCn) {
 	log.WithFields(log.Fields{"server": cn.Server, "database": cn.Database}).Info("opening database")
 	mssql.NewPool(config.GetCnString(c))
+}
+
+func initLogging() {
+	//we want to log both to stdout and to a file
+	if logFormat == "JSON" {
+		log.SetFormatter(&log.JSONFormatter{TimestampFormat: "01-02-2006 15:04:05"})
+	} else {
+		log.SetFormatter(&log.TextFormatter{TimestampFormat: "01-02-2006 15:04:05", FullTimestamp: true})
+	}
+	if logToFile != "" {
+		//if file already exists then append. log rotation done manually by user
+		logFileName, err := os.OpenFile(logToFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatal(err)
+		}
+		mw := io.MultiWriter(os.Stdout, logFileName)
+		log.SetOutput(mw)
+	}
 }
 
 func init() {
