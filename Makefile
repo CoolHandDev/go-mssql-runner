@@ -25,7 +25,7 @@ create-folders:
 	mkdir -p $(WINFOLDER)
 	mkdir -p $(DARWINFOLDER)
 
-test: update-package lint
+test: update-package
 	go test -v --cover ./...
 
 update-package:
