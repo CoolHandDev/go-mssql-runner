@@ -1,4 +1,4 @@
-// Copyright © 2016 The Go MSSQL Runner Authors
+// Copyright © 2018 The Go MSSQL Runner Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,15 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 package main
 
 import "github.com/coolhanddev/go-mssql-runner/cmd"
-
-/*
-	TODO
-		1) add "init" command to stub out config and project folder. Include example scripts.
-*/
 
 //Version stores the app version from the git tag. Make sure to use the build command below
 //

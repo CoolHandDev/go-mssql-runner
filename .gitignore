@@ -5,3 +5,4 @@ go-mssql-runner*
 debug
 .idea
 logfile.txt
+release
