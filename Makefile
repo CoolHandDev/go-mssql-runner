@@ -24,6 +24,7 @@ create-folders:
 	mkdir -p $(LINUXFOLDER)
 	mkdir -p $(WINFOLDER)
 	mkdir -p $(DARWINFOLDER)
+	mkdir -p $(ALPINEFOLDER)
 
 test: update-package
 	go test -v --cover ./...
@@ -32,8 +33,9 @@ update-package:
 	go get -u github.com/denisenkom/go-mssqldb
 	go get -u github.com/sirupsen/logrus
 	go get -u github.com/spf13/cobra
+	go get -u github.com/inconshreveable/mousetrap #for windows build
 
-build: linux windows darwin
+build: linux windows darwin alpine-linux
 	
 linux:
 	@echo ------------------Building Linux binary------------------
@@ -47,3 +49,7 @@ darwin:
 	@echo ------------------Building Darwin binary------------------
 	GOOS=darwin GOARCH=amd64 go build -a -installsuffix -i -v -o $(DARWINFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
 	@echo ------------------Completed building Darwin binary------------------
+alpine-linux:
+	@echo ------------------Building Alpine-Linux binary------------------
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix -v -o $(ALPINEFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
+	@echo ------------------Completed building Alpine-Linux binary------------------
