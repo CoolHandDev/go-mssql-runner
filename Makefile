@@ -1,6 +1,5 @@
 #TODO \
 1) Docker build \
-2) Build for alpine linux
 BINDIR			:=	$(GOPATH)/bin
 BINARYFILE		:=	go-mssql-runner
 GOMETALINTER 	:= 	$(BIN_DIR)/gometalinter
@@ -10,8 +9,8 @@ LINUXFOLDER		:=	release/linux
 WINFOLDER		:=	release/windows
 DARWINFOLDER	:=	release/darwin
 ALPINEFOLDER	:=	release/alpine-linux
-
-all: test create-folders build
+RELEASEFOLDER	:=	./release
+all: test create-folders build zip
 
 $(GOMETALINTER):
 	go get -u github.com/alecthomas/gometalinter
@@ -36,7 +35,13 @@ update-package:
 	go get -u github.com/inconshreveable/mousetrap #for windows build
 
 build: linux windows darwin alpine-linux
-	
+
+zip:
+	zip -r $(RELEASEFOLDER)/$(VERSION)-go-mssql-runner_alpine.zip ./release/alpine-linux
+	zip -r $(RELEASEFOLDER)/$(VERSION)-go-mssql-runner_darwin.zip ./release/darwin
+	zip -r $(RELEASEFOLDER)/$(VERSION)-go-mssql-runner_linux.zip ./release/linux
+	zip -r $(RELEASEFOLDER)/$(VERSION)-go-mssql-runner_windows.zip ./release/windows
+
 linux:
 	@echo ------------------Building Linux binary------------------
 	GOOS=linux GOARCH=amd64 go build -a -installsuffix -i -v -o $(LINUXFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
