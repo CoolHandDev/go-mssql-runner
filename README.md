@@ -29,8 +29,7 @@ Add executable to PATH environment variable to make it available globally.
 
 # Creating a project
 
-A project refers to the mssqlrun.conf.json file and the accompanying script files (.sql) needed to satisfy a use case. Each project should
-be contained in its own folder with the following structure:
+A project refers to the mssqlrun.conf.json file and the accompanying script files (.sql) needed to satisfy a use case. Each project should be contained in its own folder with the following structure:
 
 ```
 project-root
@@ -50,6 +49,12 @@ So, creating a project involves:
 2. creating the mssqlrun.conf.json in that folder 
 3. creating the schema and process subfolders
 4. creating or adding the scripts to those two subfolders 
+
+A default mssqlrun.conf.json file can be created by issuing the command 'init' in the desired project folder
+
+```
+go-mssql-runner init
+```
 
 ## The Configuration JSON file
 
@@ -87,7 +92,7 @@ The files should reside under a /schema folder relative to the configuration fil
 This contains the list of script files that contain DML for the business logic.  The files should reside under a
 /process folder relative to the configuration file.
 
-**Warning**: Do not place the GO tsql keyword in the script files. If there is a need for transaction isolation, then place
+**Warning**: Do not place the GO T-SQL keyword in the script files. If there is a need for transaction isolation, then place
 the relevant logic in their own .sql file(s).  
 
 #### Order of execution
@@ -110,20 +115,24 @@ to run the scripts against a SQL Server instance.
 ```    
     go-mssql-runner start [flags]
 
-    -a, --appname string    App name to show in db calls. Useful for SQL Profiler (default "go-mssql-runner")
-    -c, --conf string       The configuration file
-    -d, --database string   Database to work on. *Required
-    -p, --password string   SQL Server user password. *Required
-        --port string       Host port number (default "1433")
-    -s, --server string     SQL Server host. *Required
-    -t, --timeout string    Connection timeout in seconds (default "14400")
-    -u, --username string   SQL Server user name. *Required
-    -l, --loglevel string   Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
-        --logfile string    File to write log to
+    Flags:
+    -a, --appname string     App name to show in db calls. Useful for SQL Profiler (default "go-mssql-runner")
+    -c, --conf string        The configuration file
+    -d, --database string    Database to work on. *Required
+    -e, --encrypt-cn         Encrypt SQL Server connection
+    -h, --help               help for start
+        --logfile string     File to write log to
+        --logformat string   Format of log: JSON or text (default "text")
+    -l, --loglevel string    Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
+    -p, --password string    SQL Server user password. *Required
+        --port string        Host port number (default "1433")
+    -s, --server string      SQL Server host. *Required
+    -t, --timeout string     Connection timeout in seconds (default "14400")
+    -u, --username string    SQL Server user name. *Required
 ```
 
 ### Minimum information for execution
-1. username
+1. username -- in Windows, if username is not given, integrated authentication will be attempted
 2. password
 3. server
 4. database
@@ -133,8 +142,7 @@ to run the scripts against a SQL Server instance.
 
 First things first, storing credentials in environment variables is not secure.  Use this only for short lived terminal sessions.
 
-The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program
-will look at these for values.  Flags override environment values.
+The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program will look at these for values.  Flags override environment values.
 
 **GOSQLR_CONFIGFILE**
 
@@ -188,10 +196,16 @@ $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
 # Tips and Tricks 
 * Get detailed account of what ran and how they ran using the different log level in the -l flag of start command
-* Save the screen output to a text file by specifiing the --logfile flag of the start command 
+* Save the screen output to a text file by specifiing the --logfile flag of the start command.
+* Use the JSON option on the --logformat flag to outout the log in JSON format and make it easy to parse
+* Although scripts are run sequentially, concurrent operation can be accomplished via scripting or cli techniques. Separate operations that can be run concurrently into their own projectsFor example in Bash, commands can be run in parallel using '&': 
+
+```
+$ command1 & command2 
+``` 
+   
 
 # Roadmap
-* "init" command to create a project
-* support for encrypting and decrypting schema and process script files    
-* support for connection encryption to allow use of cloud servers. Azure and AWS require encryption.
-* update to support Context
+* support for encrypting and decrypting schema and process script files or embedding script files
+* support for Slack
+* support for cloud logging
