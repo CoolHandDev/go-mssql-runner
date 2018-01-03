@@ -32,8 +32,9 @@ update-package:
 	go get -u github.com/denisenkom/go-mssqldb
 	go get -u github.com/sirupsen/logrus
 	go get -u github.com/spf13/cobra
-	go get -u github.com/inconshreveable/mousetrap #for windows build
+	go get -u github.com/inconshreveable/mousetrap
 	go get -u github.com/smartystreets/goconvey/convey
+	go get -u gopkg.in/DATA-DOG/go-sqlmock.v1
 
 build: linux windows darwin alpine-linux
 
