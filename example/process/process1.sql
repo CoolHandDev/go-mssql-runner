@@ -1,1 +1,1 @@
-select 'process 1'
+insert into test_gomssqlrunner (testfield1) values ('this is a test value')

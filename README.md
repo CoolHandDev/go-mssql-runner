@@ -1,9 +1,9 @@
 # Go MSSQL Runner 
-cli utility for running ordered sets of sql script files
+Command line utility for running a sequence of SQL scripts.
 
 # Overview
 
-Using information from a JSON configuration file, this command line utility enables sequential execution of a set of SQL script files.
+Using information from a JSON configuration file, this command line utility enables sequential execution of SQL script files.
 
 # Platform support
 OS: Linux, OSX, Windows 
@@ -194,14 +194,32 @@ $ go-mssql-runner start
 ```
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
+# Docker container
+The included Dockerfile serves as an example on how a project image can be built.   Replace the example folders with your preferred project folder. For a light container, use the Alpine image and the alpine build of the executable.
+
+To run a persistent container:
+```
+$ docker container run --name containername go-mssql-runner-imagename start -u someuser -p somepass -s someserverip -d somedbname -c someconfigfile.json --logformat JSON
+```
+To access the container log and save to file
+```
+docker container logs containername > log.txt 
+```
+To run an ephemereal container and save log to file
+```
+docker container run -i --rm go-mssql-runner-imagename start -u someuser -p somepass -s someserverip -d somedbname -c someconfigfile.json --logformat JSON  2>&1 | tee -a log.txt
+```
+
 # Tips
 
 * Log all the time.
 * Use the command history of your favorite shell to rerun the command. Typically accessed by up or down arrow key.
-* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command.
+* Get detailed account of what ran using the different log level in the -l flag of start command.
 * Save the screen output to a text file by specifiing the --logfile flag of the start command.
 * Use the JSON option on the --logformat flag to outout the log in JSON format and make it easy to parse.
 * Although scripts are run sequentially, concurrent operation can be accomplished via scripting or cli techniques. Separate operations that can be run concurrently into their own projectsFor example in Bash, commands can be run in parallel using '&': 
+* Build Docker images to encapsulate versions of your project.  For example, create an image for dev/test and another image for production.
+* Docker containers can be run repeatedly. Command parameters need not be specified each time. Just run "docker start <containerName>" to rerun projects.
 
 
 ```
@@ -210,6 +228,7 @@ $ command1 & command2
    
 
 # Roadmap
-* support for encrypting and decrypting schema and process script files or embedding script files
-* support for Slack
-* support for cloud logging
+* script encryption
+* embedded projects
+* Slack integration
+* support for cloud logging (AWS CloudWatch)
