@@ -1,12 +1,14 @@
-# Go MSSQL Runner: a handy cli utility for running a sequence of sql script files against SQL Server 
+# Go MSSQL Runner 
+cli utility for running ordered sets of sql script files
 
 # Overview
 
-Using information from a JSON configuration file, this command line utility enables execution of one or a set of SQL script files.
+Using information from a JSON configuration file, this command line utility enables sequential execution of a set of SQL script files.
 
 # Platform support
-Linux, OSX, Windows
+OS: Linux, OSX, Windows 
 
+SQL Server:  Windows and Linux
 # Quick Start
 
 Navigate to the folder that has the executable.  Execute the program by issuing the start command and passing in the necessary parameters for the database connection
@@ -18,12 +20,12 @@ $ go-mssql-runner start --username dbusername --password secret --server 172.0.0
 
 # Installation
 
-Simply copy the appropriate executable to the destination of choice and execute.  The executables are native to the supported platforms.  There is no need
-to install a runtime or a framework. There are three executables available:
+Simply copy the appropriate executable to the destination of choice and execute.  The executables are native to the supported platforms.  There is no need to install a runtime or a framework. The executables are available in the release folder:
 
-1. go-mssql-runner -- executable for Linux.  
-2. go-mssql-runner.exe -- executable for Windows 64 bit.
-3. go-mssql-runner_osx_amd64 -- executable for OSX
+1. release/alpine-linux/go-mssql-runner
+2. release/darwin/go-mssql-runner
+3. release/linux/go-mssql-runner
+4. release/windows/go-mssql-runner.exe
 
 Add executable to PATH environment variable to make it available globally.
 
@@ -61,7 +63,7 @@ go-mssql-runner init
 The configuration file, mssqlrun.conf.json, controls which scripts run and the order they are run. It also contains metadata
 about the project.
 
-To create a stub, copy the contents below and save into a file named mssqlrun.conf.json.
+To create a stub, copy the contents below and save into a file named mssqlrun.conf.json or run the 'init' command as mentioned above.
 
 ```
 {
@@ -140,8 +142,6 @@ to run the scripts against a SQL Server instance.
 
 ## Environment Variables
 
-First things first, storing credentials in environment variables is not secure.  Use this only for short lived terminal sessions.
-
 The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program will look at these for values.  Flags override environment values.
 
 **GOSQLR_CONFIGFILE**
@@ -194,11 +194,15 @@ $ go-mssql-runner start
 ```
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
-# Tips and Tricks 
-* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command
+# Tips
+
+* Log all the time.
+* Use the command history of your favorite shell to rerun the command. Typically accessed by up or down arrow key.
+* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command.
 * Save the screen output to a text file by specifiing the --logfile flag of the start command.
-* Use the JSON option on the --logformat flag to outout the log in JSON format and make it easy to parse
+* Use the JSON option on the --logformat flag to outout the log in JSON format and make it easy to parse.
 * Although scripts are run sequentially, concurrent operation can be accomplished via scripting or cli techniques. Separate operations that can be run concurrently into their own projectsFor example in Bash, commands can be run in parallel using '&': 
+
 
 ```
 $ command1 & command2 
