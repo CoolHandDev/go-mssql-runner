@@ -33,6 +33,7 @@ update-package:
 	go get -u github.com/sirupsen/logrus
 	go get -u github.com/spf13/cobra
 	go get -u github.com/inconshreveable/mousetrap #for windows build
+	go get -u github.com/smartystreets/goconvey/convey
 
 build: linux windows darwin alpine-linux
 
