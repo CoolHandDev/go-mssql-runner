@@ -31,6 +31,7 @@ test: update-package
 update-package:
 	go get -u github.com/denisenkom/go-mssqldb
 	go get -u github.com/sirupsen/logrus
+	go get -u github.com/spf13/viper
 	go get -u github.com/spf13/cobra
 	go get -u github.com/inconshreveable/mousetrap
 	go get -u github.com/smartystreets/goconvey/convey
