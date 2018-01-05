@@ -1,3 +1,5 @@
+//Package config handles retrieval of configuration information
+//from the config file
 package config
 
 import (

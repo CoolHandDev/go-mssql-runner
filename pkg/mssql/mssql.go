@@ -1,3 +1,4 @@
+//Package mssql handles operations against SQL Server
 package mssql
 
 import (
