@@ -7,6 +7,8 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+var testConfig = "../../example/mssqlrun.conf.json"
+
 func TestMakeConnectionString(t *testing.T) {
 
 	Convey("Given that all connection values are set", t, func() {
@@ -20,7 +22,9 @@ func TestMakeConnectionString(t *testing.T) {
 		//Case 3
 		cn3 := MssqlCn{UserName: "anotheruser", Password: "", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900", LogLevel: ""}
 		cases["user id=anotheruser"+";password="+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"+";log="] = cn3
-
+		//Case 4
+		cn4 := MssqlCn{UserName: "encrypteduser", Password: "", Server: "anotherhost", Database: "anotherdatabase", Port: "1433", AppName: "another-app-name", CnTimeout: "900", LogLevel: "", Encrypt: true}
+		cases["user id=encrypteduser"+";password="+";server=anotherhost"+";database=anotherdatabase"+";port=1433"+";connection timeout=900"+";app name=another-app-name"+";log="+";encrypt=true;TrustServerCertificate=true"] = cn4
 		Convey("When they are used to construct a connectrion string", func() {
 
 			Convey("The output should be a MSSQL connection string consisting of all those values", func() {
@@ -48,7 +52,7 @@ func TestLoadConfiguration(t *testing.T) {
 
 		Convey("When it is loaded", func() {
 
-			ReadConfig("../../mssqlrun.conf.json")
+			ReadConfig(testConfig)
 			result := wrkConfig
 			Convey("The values from the file should be available to the app", func() {
 				So(result, ShouldResemble, expected)

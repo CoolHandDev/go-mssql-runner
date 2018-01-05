@@ -1,11 +1,14 @@
+//Package config handles retrieval of configuration information
+//from the config file
 package config
 
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //MssqlCn represents the connection string
@@ -18,33 +21,22 @@ type MssqlCn struct {
 	CnTimeout string
 	AppName   string
 	LogLevel  string
+	Encrypt   bool
 }
 
 //PrjConfig represents the configuration from the json file
 type PrjConfig struct {
-	Name        string
-	Description string
-	Type        string
-	Version     string
-	Scripts     CfgScripts
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Type        string     `json:"type"`
+	Version     string     `json:"version"`
+	Scripts     CfgScripts `json:"scripts"`
 }
 
 //CfgScripts represents the list of schema and process scripts
 type CfgScripts struct {
-	Schema  []string
-	Process []string
-}
-
-//GetCnString returns a sql server connection string
-func GetCnString(c MssqlCn) string {
-	return "user id=" + c.UserName +
-		";password=" + c.Password +
-		";server=" + c.Server +
-		";database=" + c.Database +
-		";port=" + c.Port +
-		";connection timeout=" + c.CnTimeout +
-		";app name=" + c.AppName +
-		";log=" + c.LogLevel
+	Schema  []string `json:"schema"`
+	Process []string `json:"process"`
 }
 
 var wrkConfig PrjConfig
@@ -52,20 +44,39 @@ var wrkConfig PrjConfig
 //wrkPath represents the working path
 var wrkPath string
 
+//GetCnString returns a sql server connection string
+func GetCnString(c MssqlCn) string {
+	var cnStr string
+
+	cnStr += "user id=" + c.UserName +
+		";password=" + c.Password +
+		";server=" + c.Server +
+		";database=" + c.Database +
+		";port=" + c.Port +
+		";connection timeout=" + c.CnTimeout +
+		";app name=" + c.AppName +
+		";log=" + c.LogLevel
+	if c.Encrypt {
+		cnStr += ";encrypt=true;TrustServerCertificate=true"
+	}
+
+	return cnStr
+}
+
 //ReadConfig reads the config file based on location passed interface{}
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 	wrkPath = filepath.Dir(f)
 	configInMem, err := ioutil.ReadFile(f)
 	if err != nil {
-		log.Println("error reading configuration")
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
 	if err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
 }
 

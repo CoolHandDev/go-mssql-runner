@@ -1,12 +1,14 @@
-# Go MSSQL Runner: a handy cli utility for running a sequence of sql script files against SQL Server 
+# Go MSSQL Runner 
+Command line utility for running a sequence of SQL scripts.
 
 # Overview
 
-Using information from a JSON configuration file, this command line utility enables execution of one or a set of SQL script files.
+Using information from a JSON configuration file, this command line utility enables sequential execution of SQL script files.
 
 # Platform support
-Linux, OSX, Windows
+OS: Linux, OSX, Windows 
 
+SQL Server:  Windows and Linux
 # Quick Start
 
 Navigate to the folder that has the executable.  Execute the program by issuing the start command and passing in the necessary parameters for the database connection
@@ -18,19 +20,18 @@ $ go-mssql-runner start --username dbusername --password secret --server 172.0.0
 
 # Installation
 
-Simply copy the appropriate executable to the destination of choice and execute.  The executables are native to the supported platforms.  There is no need
-to install a runtime or a framework. There are three executables available:
+Simply copy the appropriate executable to the destination of choice and execute.  The executables are native to the supported platforms.  There is no need to install a runtime or a framework. The executables are available in the release folder:
 
-1. go-mssql-runner -- executable for Linux.  
-2. go-mssql-runner.exe -- executable for Windows 64 bit.
-3. go-mssql-runner_osx_amd64 -- executable for OSX
+1. release/alpine-linux/go-mssql-runner
+2. release/darwin/go-mssql-runner
+3. release/linux/go-mssql-runner
+4. release/windows/go-mssql-runner.exe
 
 Add executable to PATH environment variable to make it available globally.
 
 # Creating a project
 
-A project refers to the mssqlrun.conf.json file and the accompanying script files (.sql) needed to satisfy a use case. Each project should
-be contained in its own folder with the following structure:
+A project refers to the mssqlrun.conf.json file and the accompanying script files (.sql) needed to satisfy a use case. Each project should be contained in its own folder with the following structure:
 
 ```
 project-root
@@ -51,12 +52,18 @@ So, creating a project involves:
 3. creating the schema and process subfolders
 4. creating or adding the scripts to those two subfolders 
 
+A default mssqlrun.conf.json file can be created by issuing the command 'init' in the desired project folder
+
+```
+go-mssql-runner init
+```
+
 ## The Configuration JSON file
 
 The configuration file, mssqlrun.conf.json, controls which scripts run and the order they are run. It also contains metadata
 about the project.
 
-To create a stub, copy the contents below and save into a file named mssqlrun.conf.json.
+To create a stub, copy the contents below and save into a file named mssqlrun.conf.json or run the 'init' command as mentioned above.
 
 ```
 {
@@ -87,7 +94,7 @@ The files should reside under a /schema folder relative to the configuration fil
 This contains the list of script files that contain DML for the business logic.  The files should reside under a
 /process folder relative to the configuration file.
 
-**Warning**: Do not place the GO tsql keyword in the script files. If there is a need for transaction isolation, then place
+**Warning**: Do not place the GO T-SQL keyword in the script files. If there is a need for transaction isolation, then place
 the relevant logic in their own .sql file(s).  
 
 #### Order of execution
@@ -110,20 +117,24 @@ to run the scripts against a SQL Server instance.
 ```    
     go-mssql-runner start [flags]
 
-    -a, --appname string    App name to show in db calls. Useful for SQL Profiler (default "go-mssql-runner")
-    -c, --conf string       The configuration file
-    -d, --database string   Database to work on. *Required
-    -p, --password string   SQL Server user password. *Required
-        --port string       Host port number (default "1433")
-    -s, --server string     SQL Server host. *Required
-    -t, --timeout string    Connection timeout in seconds (default "14400")
-    -u, --username string   SQL Server user name. *Required
-    -l, --loglevel string   Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
-        --logfile string    File to write log to
+    Flags:
+    -a, --appname string     App name to show in db calls. Useful for SQL Profiler (default "go-mssql-runner")
+    -c, --conf string        The configuration file
+    -d, --database string    Database to work on. *Required
+    -e, --encrypt-cn         Encrypt SQL Server connection
+    -h, --help               help for start
+        --logfile string     File to write log to
+        --logformat string   Format of log: JSON or text (default "text")
+    -l, --loglevel string    Specifies level of verbosity for SQL log output. See start command help (above) for details (default "0")
+    -p, --password string    SQL Server user password. *Required
+        --port string        Host port number (default "1433")
+    -s, --server string      SQL Server host. *Required
+    -t, --timeout string     Connection timeout in seconds (default "14400")
+    -u, --username string    SQL Server user name. *Required
 ```
 
 ### Minimum information for execution
-1. username
+1. username -- in Windows, if username is not given, integrated authentication will be attempted
 2. password
 3. server
 4. database
@@ -131,10 +142,7 @@ to run the scripts against a SQL Server instance.
 
 ## Environment Variables
 
-First things first, storing credentials in environment variables is not secure.  Use this only for short lived terminal sessions.
-
-The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program
-will look at these for values.  Flags override environment values.
+The following environment variables can be set to store the minimum information.  If no flags are set on the command, then the program will look at these for values.  Flags override environment values.
 
 **GOSQLR_CONFIGFILE**
 
@@ -186,12 +194,46 @@ $ go-mssql-runner start
 ```
 $ go-mssql-runner start -c ~/SomeOtherProjectFolder/mssqlrun.conf.json
 ```
-# Tips and Tricks 
-* Get detailed account of what ran and how they ran using the different log level in the -l flag of start command
-* Save the screen output to a text file by specifiing the --logfile flag of the start command 
+# Docker container
+The included Dockerfile serves as an example on how a project image can be built.   Replace the example folders with your preferred project folder. For a light container, use the Alpine image and the alpine build of the executable.
+
+To run a persistent container:
+```
+docker container run -i --name containername go-mssql-runner-imagename start -u someuser -p somepass -s someserverip -d somedbname -c someconfigfile.json --logformat JSON
+```
+To access the container log and save to file
+```
+docker container logs containername > log.txt 
+```
+To run it again
+```
+docker container start -i containername
+```
+To run an ephemereal container and save log to file
+```
+docker container run -i --rm go-mssql-runner-imagename start -u someuser -p somepass -s someserverip -d somedbname -c someconfigfile.json --logformat JSON  2>&1 | tee -a log.txt
+```
+
+# Tips
+
+* Log all the time.
+* Use the command history of your favorite shell to rerun the command. Typically accessed by up or down arrow key.
+* Get detailed account of what ran using the different log level in the -l flag of start command.
+* Save the screen output to a text file by specifiing the --logfile flag of the start command.
+* Use the JSON option on the --logformat flag to outout the log in JSON format and make it easy to parse.
+* Although scripts are run sequentially, concurrent operation can be accomplished via scripting or cli techniques. Separate operations that can be run concurrently into their own projects. For example in Bash, commands can be run in parallel using '&': 
+
+```
+$ command1 & command2 
+``` 
+* Build Docker images to encapsulate versions of your project.  For example, create an image for dev/test and another image for production.
+* Docker containers can be run repeatedly. Command parameters need not be specified each time. Just run "docker start ContainerName" to rerun projects.
+
+
+   
 
 # Roadmap
-* "init" command to create a project
-* support for encrypting and decrypting schema and process script files    
-* support for connection encryption to allow use of cloud servers. Azure and AWS require encryption.
-* update to support Context
+* script encryption
+* embedded projects
+* Slack integration
+* support for cloud logging (AWS CloudWatch)
