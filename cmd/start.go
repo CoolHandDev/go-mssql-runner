@@ -35,6 +35,33 @@ var startCmd = &cobra.Command{
 	Run:   start,
 }
 
+func init() {
+	RootCmd.AddCommand(startCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// startCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	logLevelMsg := "Specifies level of verbosity for SQL log output. See start command help (above) for details"
+	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "The configuration file")
+	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
+	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
+	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host. *Required")
+	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on. *Required")
+	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
+	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
+	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
+	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
+	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
+	startCmd.Flags().StringVarP(&logFormat, "logformat", "", "text", "Format of log: JSON or text")
+	startCmd.Flags().BoolVarP(&encryptCn, "encrypt-cn", "e", false, "Encrypt SQL Server connection")
+}
+
 func start(cmd *cobra.Command, args []string) {
 	if server == "" || database == "" || configFile == "" {
 		//if required parameters are not met, check environment variables
@@ -115,32 +142,6 @@ func execScripts() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-func init() {
-	RootCmd.AddCommand(startCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// startCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	logLevelMsg := "Specifies level of verbosity for SQL log output. See start command help (above) for details"
-	startCmd.Flags().StringVarP(&configFile, "conf", "c", "", "The configuration file")
-	startCmd.Flags().StringVarP(&userName, "username", "u", "", "SQL Server user name. *Required")
-	startCmd.Flags().StringVarP(&password, "password", "p", "", "SQL Server user password. *Required")
-	startCmd.Flags().StringVarP(&server, "server", "s", "", "SQL Server host. *Required")
-	startCmd.Flags().StringVarP(&database, "database", "d", "", "Database to work on. *Required")
-	startCmd.Flags().StringVarP(&port, "port", "", "1433", "Host port number")
-	startCmd.Flags().StringVarP(&cnTimeout, "timeout", "t", "14400", "Connection timeout in seconds")
-	startCmd.Flags().StringVarP(&appName, "appname", "a", "go-mssql-runner", "App name to show in db calls. Useful for SQL Profiler")
-	startCmd.Flags().StringVarP(&logLevel, "loglevel", "l", "0", logLevelMsg)
-	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
-	startCmd.Flags().StringVarP(&logFormat, "logformat", "", "text", "Format of log: JSON or text")
-	startCmd.Flags().BoolVarP(&encryptCn, "encrypt-cn", "e", false, "Encrypt SQL Server connection")
 }
 
 func cmdLongDesc() string {
