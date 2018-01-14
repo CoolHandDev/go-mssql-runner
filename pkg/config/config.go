@@ -63,7 +63,7 @@ func GetCnString(c MssqlCn) string {
 	return cnStr
 }
 
-//ReadConfig reads the config file based on location passed interface{}
+//ReadConfig reads the config file based on location passed
 func ReadConfig(f string) {
 	_, err := os.Stat(f)
 	if os.IsNotExist(err) {
