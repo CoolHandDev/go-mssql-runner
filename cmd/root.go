@@ -14,26 +14,36 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "go-mssql-runner",
 	Short: "A script runner for MS SQL Server",
-	Long: `Runs a series of file-based SQL scripts on MS SQL Server.
+	Long:  rootCmdLongDesc(),
+}
+
+func init() {
+	cobra.OnInitialize(initConfig)
+	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func rootCmdLongDesc() string {
+	return `
+Runs a series of file-based SQL scripts on MS SQL Server.
 
 A JSON configuration file is required. The configuration file should be 
 in the format:
 
 {
-    "name": "A SQL Project",
-    "description": "This project runs a series of scripts to manipulate data",
-    "type": "Report",
-    "version": "1.0.0",
-    "scripts": {
-        "schema": [
-            "/schema/schema_script1.sql",
-            "/schema/schema_script2.sql"
-        ],
-        "process": [
-            "/process/process_script1.sql",
-            "/process/process_script2.sql"
-        ]
-    }
+	"name": "A SQL Project",
+	"description": "This project runs a series of scripts to manipulate data",
+	"type": "Report",
+	"version": "1.0.0",
+	"scripts": {
+		"schema": [
+			"/schema/schema_script1.sql",
+			"/schema/schema_script2.sql"
+		],
+		"process": [
+			"/process/process_script1.sql",
+			"/process/process_script2.sql"
+		]
+	}
 }
 
 "schema" scripts contain DDL statements such as create table or create stored
@@ -63,14 +73,7 @@ WARNING: Do not place GO statements in the script files.
 Connection information must be passed in via the command flags. For example:
 
 go-mssql-runner start -c /path/configFile.json -u sqlUserName -p sqlPassword -s SQLServerHostName -d DatabaseName
-
-
-`,
-}
-
-func init() {
-	cobra.OnInitialize(initConfig)
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	`
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
