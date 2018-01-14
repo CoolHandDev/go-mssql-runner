@@ -31,7 +31,7 @@ var encryptCn bool
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start running scripts",
-	Long:  cmdLongDesc(),
+	Long:  startCmdLongDesc(),
 	Run:   start,
 }
 
@@ -135,7 +135,7 @@ func execScripts() {
 	}
 }
 
-func cmdLongDesc() string {
+func startCmdLongDesc() string {
 	return `
 
 The start command kicks off the execution of the scripts listed in the 
