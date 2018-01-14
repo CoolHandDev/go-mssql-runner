@@ -74,7 +74,7 @@ func ReadConfig(f string) {
 	if err != nil {
 		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
-	err = json.Unmarshal([]byte(configInMem), &wrkConfig)
+	err = json.Unmarshal(configInMem, &wrkConfig)
 	if err != nil {
 		log.WithFields(log.Fields{"file_name": f}).Fatal(err)
 	}
