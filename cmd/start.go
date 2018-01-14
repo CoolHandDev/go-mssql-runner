@@ -31,46 +31,8 @@ var encryptCn bool
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start running scripts",
-	Long: `
-
-The start command kicks off the execution of the scripts listed in the 
-configuration json file specified in the --conf flag. Connection
-information to MS SQL Server must be passed in.
-
-The minimum required database connection information are: username,
-password, server and database.
-
-The minimum required values to run the command can be set in environment
-variables.
-
-GOSQLR_CONFIGFILE
-GOSQLR_USERNAME
-GOSQLR_PASSWORD
-GOSQLR_SERVER
-GOSQLR_DATABASE
-
-Specifying parameter values will override the environment settings. 
-
-Examples:
-Passing parameters
-> go-mssql-runner start -u dbuser -p secretpass -s 172.0.0.1 -d mydatabasename -c x:\workspace\mssqlrun.conf.json
-
-When environment variables are set, then just run  
-> go-mssql-runner start
-
-Different log levels can be set via the -l flag.
-
-0 no logging
-1 log errors
-2 log messages 
-4 log rows affected 
-8 trace sql statements 
-16 log statement parameters 
-32 log transaction begin/end 
-63 full logging
-
-`,
-	Run: start,
+	Long:  cmdLongDesc(),
+	Run:   start,
 }
 
 func start(cmd *cobra.Command, args []string) {
@@ -179,4 +141,46 @@ func init() {
 	startCmd.Flags().StringVarP(&logToFile, "logfile", "", "", "File to write log to")
 	startCmd.Flags().StringVarP(&logFormat, "logformat", "", "text", "Format of log: JSON or text")
 	startCmd.Flags().BoolVarP(&encryptCn, "encrypt-cn", "e", false, "Encrypt SQL Server connection")
+}
+
+func cmdLongDesc() string {
+	return `
+
+The start command kicks off the execution of the scripts listed in the 
+configuration json file specified in the --conf flag. Connection
+information to MS SQL Server must be passed in.
+
+The minimum required database connection information are: username,
+password, server and database.
+
+The minimum required values to run the command can be set in environment
+variables.
+
+GOSQLR_CONFIGFILE
+GOSQLR_USERNAME
+GOSQLR_PASSWORD
+GOSQLR_SERVER
+GOSQLR_DATABASE
+
+Specifying parameter values will override the environment settings. 
+
+Examples:
+Passing parameters
+> go-mssql-runner start -u dbuser -p secretpass -s 172.0.0.1 -d mydatabasename -c x:\workspace\mssqlrun.conf.json
+
+When environment variables are set, then just run  
+> go-mssql-runner start
+
+Different log levels can be set via the -l flag.
+
+0 no logging
+1 log errors
+2 log messages 
+4 log rows affected 
+8 trace sql statements 
+16 log statement parameters 
+32 log transaction begin/end 
+63 full logging
+	
+	`
 }
