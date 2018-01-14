@@ -68,6 +68,11 @@ go-mssql-runner start -c /path/configFile.json -u sqlUserName -p sqlPassword -s 
 `,
 }
 
+func init() {
+	cobra.OnInitialize(initConfig)
+	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -75,11 +80,6 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-}
-
-func init() {
-	cobra.OnInitialize(initConfig)
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
