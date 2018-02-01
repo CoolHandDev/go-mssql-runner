@@ -53,8 +53,8 @@ func TestExecScript(t *testing.T) {
 
 		Convey("When process1.sql is executed", func() {
 			processFile1 := processFiles[0]
-			mock.ExpectExec(processFile1).WillReturnResult(sqlmock.NewResult(1, 1))
-			_, _ = ExecScript(db, processFile1)
+			mock.ExpectExec(ReadScript(processFile1)).WillReturnResult(sqlmock.NewResult(1, 1))
+			_, _ = ExecScript(db, ReadScript(processFile1))
 
 			Convey("The expectations should be fulfilled", func() {
 				if err = mock.ExpectationsWereMet(); err != nil {
