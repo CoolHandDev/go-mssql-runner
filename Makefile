@@ -25,17 +25,8 @@ create-folders:
 	mkdir -p $(DARWINFOLDER)
 	mkdir -p $(ALPINEFOLDER)
 
-test: update-package
+test: 
 	go test -v --cover ./...
-
-update-package:
-	go get -u github.com/denisenkom/go-mssqldb
-	go get -u github.com/sirupsen/logrus
-	go get -u github.com/spf13/viper
-	go get -u github.com/spf13/cobra
-	go get -u github.com/inconshreveable/mousetrap
-	go get -u github.com/smartystreets/goconvey/convey
-	go get -u gopkg.in/DATA-DOG/go-sqlmock.v1
 
 build: linux windows darwin alpine-linux
 
@@ -47,17 +38,17 @@ zip:
 
 linux:
 	@echo ------------------Building Linux binary------------------
-	GOOS=linux GOARCH=amd64 go build -a -installsuffix -i -v -o $(LINUXFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
+	GOOS=linux GOARCH=amd64 go build -a -installsuffix -i -v -o $(LINUXFOLDER)/$(BINARYFILE) -ldflags=all='-X "main.Version=$(VERSION)" -s -w'
 	@echo ------------------Completed building Linux binary------------------
 windows:
 	@echo ------------------Building Windows binary------------------
-	GOOS=windows GOARCH=amd64 go build -a -installsuffix -i -v -o $(WINFOLDER)/$(BINARYFILE).exe -ldflags="-X main.Version=$(VERSION)"
+	GOOS=windows GOARCH=amd64 go build -a -installsuffix -i -v -o $(WINFOLDER)/$(BINARYFILE).exe -ldflags=all='-X "main.Version=$(VERSION)" -s -w'
 	@echo ------------------Completed building Windows binary------------------
 darwin:
 	@echo ------------------Building Darwin binary------------------
-	GOOS=darwin GOARCH=amd64 go build -a -installsuffix -i -v -o $(DARWINFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
+	GOOS=darwin GOARCH=amd64 go build -a -installsuffix -i -v -o $(DARWINFOLDER)/$(BINARYFILE) -ldflags=all='-X "main.Version=$(VERSION)" -s -w'
 	@echo ------------------Completed building Darwin binary------------------
 alpine-linux:
 	@echo ------------------Building Alpine-Linux binary------------------
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix -v -o $(ALPINEFOLDER)/$(BINARYFILE) -ldflags="-X main.Version=$(VERSION)"
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix -v -o $(ALPINEFOLDER)/$(BINARYFILE) -ldflags=all='-X "main.Version=$(VERSION)" -s -w'
 	@echo ------------------Completed building Alpine-Linux binary------------------
